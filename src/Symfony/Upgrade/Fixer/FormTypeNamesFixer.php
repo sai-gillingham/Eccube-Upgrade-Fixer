@@ -34,7 +34,7 @@ class FormTypeNamesFixer extends FormTypeFixer
         return 'Instead of referencing types by name, you should reference them by their fully-qualified class name (FQCN) instead.';
     }
 
-    private function matchTypeName(Tokens $tokens, $name)
+    protected function matchTypeName(Tokens $tokens, $name)
     {
         return $tokens->findSequence([
             [T_OBJECT_OPERATOR],
