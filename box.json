@@ -21,7 +21,7 @@
     ],
     "compression": "GZ",
     "main": "bin/symfony-upgrade-fixer",
-    "output": "build/symfony-upgrade-fixer.phar",
+    "output": "build/eccube-upgrade-fixer.phar",
     "stub": true,
     "chmod": "0755"
 }
