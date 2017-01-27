@@ -73,6 +73,6 @@ class FormChoiceTypeArrayFixer extends FormTypeFixer
      */
     public function getDescription()
     {
-        return "`'choices' => array(...)` -> `'choices' => array_flip(array(...))`";
+        return "Flip choices in ChoiceType.";
     }
 }

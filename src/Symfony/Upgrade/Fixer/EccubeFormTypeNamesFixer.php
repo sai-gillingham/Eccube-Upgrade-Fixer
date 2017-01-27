@@ -152,7 +152,7 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
 
     public function getDescription()
     {
-        return "EC-CUBE用のFormType対応";
+        return "EC-CUBE FormType support.";
     }
 
 }
