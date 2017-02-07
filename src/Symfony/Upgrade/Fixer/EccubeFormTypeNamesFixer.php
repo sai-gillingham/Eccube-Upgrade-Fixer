@@ -10,7 +10,7 @@ use Symfony\CS\Tokenizer\Tokens;
 class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
 {
 
-    private $typeMaps = array(
+    private static $TYPE_MAP = array(
         'name' => 'Eccube\Form\Type\NameType',
         'kana' => 'Eccube\Form\Type\KanaType',
         'tel' => 'Eccube\Form\Type\TelType',
@@ -100,17 +100,53 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         $tokens = Tokens::fromCode($content);
 
         if ($this->isFormType($tokens)) {
-            foreach (array_keys($this->typeMaps) as $type) {
-                if (null === $this->matchTypeName($tokens, $type)) {
-                    continue;
-                }
-
-                $this->addTypeUse($tokens, $type);
-                $this->fixTypeNames($tokens, $type);
-            }
+            $this->fixTypeNameInFormType($tokens);
+        } else {
+            $this->fixTypeNameForFormFactory($tokens);
         }
 
         return $tokens->generateCode();
+    }
+
+    protected function fixTypeNameInFormType($tokens)
+    {
+        foreach (array_keys(self::$TYPE_MAP) as $type) {
+            if (null === $this->matchTypeName($tokens, $type)) {
+                continue;
+            }
+
+            $this->addTypeUse($tokens, $type);
+            $this->fixTypeNames($tokens, $type);
+        }
+    }
+
+    protected function fixTypeNameForFormFactory($tokens)
+    {
+        $currentIndex = 0;
+        $matchedTokens = null;
+        do {
+            $beforeTokenSize = count($tokens);
+            $matchedTokens = $tokens->findSequence([
+                [T_VARIABLE, '$app'],
+                '[',
+                [T_CONSTANT_ENCAPSED_STRING, "'form.factory'"],
+                ']',
+                [T_OBJECT_OPERATOR],
+                [T_STRING, 'createBuilder'],
+                '(',
+                [T_CONSTANT_ENCAPSED_STRING]
+            ], $currentIndex);
+            if ($matchedTokens) {
+                $typeToken = end($matchedTokens);
+                $type = preg_replace('/\'(.*)\'/', '$1', $typeToken->getContent());
+                if (isset(self::$TYPE_MAP[$type])) {
+                    $this->fixTypeName($tokens, $matchedTokens, $type);
+                    $this->addTypeUse($tokens, $type);
+                }
+            }
+            $afterTokenSize = count($tokens);
+            $currentIndex += $afterTokenSize - $beforeTokenSize;
+        } while ($matchedTokens);
     }
 
     protected function addTypeUse(Tokens $tokens, $name)
@@ -128,6 +164,13 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
             return;
         }
 
+        $this->fixTypeName($tokens, $matchedTokens, $name);
+
+        $this->fixTypeNames($tokens, $name);
+    }
+
+    protected function fixTypeName($tokens, $matchedTokens, $name)
+    {
         $matchedIndexes = array_keys($matchedTokens);
 
         $matchedIndex = $matchedIndexes[count($matchedIndexes) - 1];
@@ -141,13 +184,11 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
             ]
         );
         $matchedTokens[$matchedIndex]->override([CT_CLASS_CONSTANT, 'class']);
-
-        $this->fixTypeNames($tokens, $name);
     }
 
     private function getFormTypeFQCN($name)
     {
-        return explode('\\', $this->typeMaps[$name]);
+        return explode('\\', self::$TYPE_MAP[$name]);
     }
 
     public function getDescription()
