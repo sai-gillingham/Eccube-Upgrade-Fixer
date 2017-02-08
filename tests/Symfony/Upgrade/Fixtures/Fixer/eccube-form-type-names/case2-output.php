@@ -2,6 +2,7 @@
 
 namespace Eccube\Controller\Admin\Order;
 
+use Eccube\Form\Type\Front\CustomerLoginType;
 use Eccube\Form\Type\Admin\OrderType;
 use Eccube\Application;
 use Eccube\Controller\AbstractController;
@@ -17,6 +18,8 @@ class EditController extends AbstractController
         $builder = $app['form.factory']->createBuilder();
         $builder = $app['form.factory']->createBuilder(OrderType::class);
         $builder = $app['form.factory']->createBuilder(OrderType::class, $TargetOrder);
+
+        $builder = $app['form.factory']->createNamedBuilder('', CustomerLoginType::class);
     }
 
 }

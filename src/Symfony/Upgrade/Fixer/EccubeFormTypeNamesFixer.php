@@ -95,6 +95,38 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         'plugin_management' => 'Eccube\Form\Type\Admin\PluginManagementType',
     );
 
+    /**
+     * $app['form.factory']->createBuilder('order'
+     * @var array
+     */
+    private static $SEQ_FORM_TYPE_CREATE_BUILDER = array(
+        [T_VARIABLE, '$app'],
+        '[',
+        [T_CONSTANT_ENCAPSED_STRING, "'form.factory'"],
+        ']',
+        [T_OBJECT_OPERATOR],
+        [T_STRING, 'createBuilder'],
+        '(',
+        [T_CONSTANT_ENCAPSED_STRING]
+    );
+
+    /**
+     * $app['form.factory']->createNamedBuilder('..', 'order'
+     * @var array
+     */
+    private static $SEQ_FORM_TYPE_CREATE_NAMED_BUILDER = array(
+        [T_VARIABLE, '$app'],
+        '[',
+        [T_CONSTANT_ENCAPSED_STRING, "'form.factory'"],
+        ']',
+        [T_OBJECT_OPERATOR],
+        [T_STRING, 'createNamedBuilder'],
+        '(',
+        [T_CONSTANT_ENCAPSED_STRING],
+        ',',
+        [T_CONSTANT_ENCAPSED_STRING]
+    );
+
     public function fix(\SplFileInfo $file, $content)
     {
         $tokens = Tokens::fromCode($content);
@@ -126,16 +158,10 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         $matchedTokens = null;
         do {
             $beforeTokenSize = count($tokens);
-            $matchedTokens = $tokens->findSequence([
-                [T_VARIABLE, '$app'],
-                '[',
-                [T_CONSTANT_ENCAPSED_STRING, "'form.factory'"],
-                ']',
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'createBuilder'],
-                '(',
-                [T_CONSTANT_ENCAPSED_STRING]
-            ], $currentIndex);
+
+            $matchedTokens = $tokens->findSequence(self::$SEQ_FORM_TYPE_CREATE_BUILDER, $currentIndex)
+                ?: $tokens->findSequence(self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER, $currentIndex);
+
             if ($matchedTokens) {
                 $typeToken = end($matchedTokens);
                 $type = preg_replace('/\'(.*)\'/', '$1', $typeToken->getContent());
