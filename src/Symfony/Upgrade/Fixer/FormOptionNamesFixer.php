@@ -20,6 +20,9 @@ class FormOptionNamesFixer extends FormTypeFixer
                 $fieldNames = [
                     'precision' => 'scale',
                     'virtual' => 'inherit_data',
+                    'property' => 'choice_label',
+                    'empty_value' => 'placeholder',
+                    'type' => 'entry_type',
                 ];
 
                 foreach ($fieldNames as $oldName => $newName) {

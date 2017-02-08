@@ -23,6 +23,14 @@ class RegistrationFormType extends AbstractType
                 'virtual' => true,
             ])
             ->add('password', 'password')
+            ->add('device', 'entity', array(
+                'class' => 'Eccube\Entity\Master\DeviceType',
+                'property' => 'id',
+                'empty_value' => '指定なし',
+            ))
+            ->add('Shippings', 'collection', array(
+                'type' => 'shipping',
+            ))
         ;
     }
 }
