@@ -28,6 +28,9 @@ class RegistrationFormType extends AbstractType
                 'choice_label' => 'id',
                 'placeholder' => '指定なし',
             ))
+            ->add('device', 'entity', array(
+            ))
+            ->add('device', 'entity', array())
             ->add('Shippings', 'collection', array(
                 'entry_type' => 'shipping',
             ))

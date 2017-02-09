@@ -27,7 +27,12 @@ class RegistrationFormType extends AbstractType
                 'class' => 'Eccube\Entity\Master\DeviceType',
                 'property' => 'id',
                 'empty_value' => '指定なし',
+                'empty_data' => null,
             ))
+            ->add('device', 'entity', array(
+                'empty_data' => null
+            ))
+            ->add('device', 'entity', array('empty_data' => null))
             ->add('Shippings', 'collection', array(
                 'type' => 'shipping',
             ))

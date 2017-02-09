@@ -23,6 +23,7 @@ class FormOptionNamesFixer extends FormTypeFixer
                     'property' => 'choice_label',
                     'empty_value' => 'placeholder',
                     'type' => 'entry_type',
+                    'empty_data' => null,
                 ];
 
                 foreach ($fieldNames as $oldName => $newName) {
@@ -75,7 +76,24 @@ class FormOptionNamesFixer extends FormTypeFixer
             }
 
             if ("'$oldName'" === $token->getContent()) {
-                $token->setContent("'$newName'");
+                if (is_null($newName)) {
+                    $oldNameKeyValueToken = $tokens->findSequence([
+                        [T_CONSTANT_ENCAPSED_STRING, "'$oldName'"],
+                        [T_DOUBLE_ARROW],
+                        [T_STRING]
+                    ], $index - 2);
+                    if ($oldNameKeyValueToken) {
+                        list($start, , $end) = array_keys($oldNameKeyValueToken);
+                        $next = $tokens->getNextMeaningfulToken($end);
+                        if ($tokens[$next]->equals(',')) {
+                            $end = $next;
+                        }
+                        $tokens->removeLeadingWhitespace($start);
+                        $tokens->clearRange($start, $end);
+                    }
+                } else {
+                    $token->setContent("'$newName'");
+                }
             }
         } while (!in_array($token->getContent(), [')', ']']));
 
