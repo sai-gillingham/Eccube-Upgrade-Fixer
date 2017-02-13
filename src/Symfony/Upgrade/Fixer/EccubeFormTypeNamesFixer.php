@@ -154,25 +154,27 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
 
     protected function fixTypeNameForFormFactory($tokens)
     {
-        $currentIndex = 0;
-        $matchedTokens = null;
-        do {
-            $beforeTokenSize = count($tokens);
+        foreach ([self::$SEQ_FORM_TYPE_CREATE_BUILDER, self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER] as $sequence) {
+            $currentIndex = 0;
+            $matchedTokens = null;
+            do {
+                $beforeTokenSize = count($tokens);
 
-            $matchedTokens = $tokens->findSequence(self::$SEQ_FORM_TYPE_CREATE_BUILDER, $currentIndex)
-                ?: $tokens->findSequence(self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER, $currentIndex);
+                $matchedTokens = $tokens->findSequence($sequence, $currentIndex);
 
-            if ($matchedTokens) {
-                $typeToken = end($matchedTokens);
-                $type = preg_replace('/\'(.*)\'/', '$1', $typeToken->getContent());
-                if (isset(self::$TYPE_MAP[$type])) {
-                    $this->fixTypeName($tokens, $matchedTokens, $type);
-                    $this->addTypeUse($tokens, $type);
+                if ($matchedTokens) {
+                    $indexes = array_keys($matchedTokens);
+                    $typeToken = end($matchedTokens);
+                    $type = preg_replace('/\'(.*)\'/', '$1', $typeToken->getContent());
+                    if (isset(self::$TYPE_MAP[$type])) {
+                        $this->fixTypeName($tokens, $matchedTokens, $type);
+                        $this->addTypeUse($tokens, $type);
+                    }
+                    $afterTokenSize = count($tokens);
+                    $currentIndex = end($indexes) + $afterTokenSize - $beforeTokenSize;
                 }
-            }
-            $afterTokenSize = count($tokens);
-            $currentIndex += $afterTokenSize - $beforeTokenSize;
-        } while ($matchedTokens);
+            } while ($matchedTokens);
+        }
     }
 
     protected function addTypeUse(Tokens $tokens, $name)

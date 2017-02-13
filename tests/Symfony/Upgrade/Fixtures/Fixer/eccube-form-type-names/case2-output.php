@@ -20,6 +20,11 @@ class EditController extends AbstractController
         $builder = $app['form.factory']->createBuilder(OrderType::class, $TargetOrder);
 
         $builder = $app['form.factory']->createNamedBuilder('', CustomerLoginType::class);
+
+        $form = $app['form.factory']->createBuilder('form')
+            ->add('file', 'file')
+            ->add('create_file', 'text')
+            ->getForm();
     }
 
 }
