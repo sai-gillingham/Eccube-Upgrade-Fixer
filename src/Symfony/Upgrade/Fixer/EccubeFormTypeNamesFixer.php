@@ -93,6 +93,8 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         'admin_system_masterdata_edit' => 'Eccube\Form\Type\Admin\MasterdataEditType',
         'plugin_local_install' => 'Eccube\Form\Type\Admin\PluginLocalInstallType',
         'plugin_management' => 'Eccube\Form\Type\Admin\PluginManagementType',
+        'entity' => 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
+        'collection' => 'Symfony\Component\Form\Extension\Core\Type\CollectionType'
     );
 
     /**
@@ -127,6 +129,15 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         [T_CONSTANT_ENCAPSED_STRING]
     );
 
+    private static $SEQ_FORM_BUILDER_ADD = [
+        [T_OBJECT_OPERATOR],
+        [T_STRING, 'add'],
+        '(',
+        [T_CONSTANT_ENCAPSED_STRING],
+        ',',
+        [T_CONSTANT_ENCAPSED_STRING]
+    ];
+
     public function fix(\SplFileInfo $file, $content)
     {
         $tokens = Tokens::fromCode($content);
@@ -152,29 +163,40 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         }
     }
 
+    /**
+     * @param Tokens|$tokens
+     */
     protected function fixTypeNameForFormFactory($tokens)
     {
-        foreach ([self::$SEQ_FORM_TYPE_CREATE_BUILDER, self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER] as $sequence) {
+        foreach ([self::$SEQ_FORM_TYPE_CREATE_BUILDER, self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER, self::$SEQ_FORM_BUILDER_ADD] as $sequence) {
             $currentIndex = 0;
             $matchedTokens = null;
             do {
                 $beforeTokenSize = count($tokens);
 
-                $matchedTokens = $tokens->findSequence($sequence, $currentIndex);
-
+                $matchedTokens = $this->fixTypeNameForSequence($tokens, $sequence, $currentIndex);
                 if ($matchedTokens) {
                     $indexes = array_keys($matchedTokens);
-                    $typeToken = end($matchedTokens);
-                    $type = preg_replace('/\'(.*)\'/', '$1', $typeToken->getContent());
-                    if (isset(self::$TYPE_MAP[$type])) {
-                        $this->fixTypeName($tokens, $matchedTokens, $type);
-                        $this->addTypeUse($tokens, $type);
-                    }
                     $afterTokenSize = count($tokens);
                     $currentIndex = end($indexes) + $afterTokenSize - $beforeTokenSize;
                 }
             } while ($matchedTokens);
         }
+    }
+
+    private function fixTypeNameForSequence($tokens, $sequence, $currentIndex)
+    {
+        $matchedTokens = $tokens->findSequence($sequence, $currentIndex);
+
+        if ($matchedTokens) {
+            $typeToken = end($matchedTokens);
+            $type = preg_replace('/\'(.*)\'/', '$1', $typeToken->getContent());
+            if (isset(self::$TYPE_MAP[$type])) {
+                $this->fixTypeName($tokens, $matchedTokens, $type);
+                $this->addTypeUse($tokens, $type);
+            }
+        }
+        return $matchedTokens;
     }
 
     protected function addTypeUse(Tokens $tokens, $name)

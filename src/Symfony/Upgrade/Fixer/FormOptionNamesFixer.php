@@ -10,7 +10,7 @@ class FormOptionNamesFixer extends FormTypeFixer
     {
         $tokens = Tokens::fromCode($content);
 
-        if ($this->isFormType($tokens)) {
+//        if ($this->isFormType($tokens)) {
             $fieldNameTokenSets = [
                 [[T_CONSTANT_ENCAPSED_STRING]],
                 [[T_STRING], [T_DOUBLE_COLON], [CT_CLASS_CONSTANT]],
@@ -30,7 +30,7 @@ class FormOptionNamesFixer extends FormTypeFixer
                     $this->fixOptionNames($tokens, $fieldNameTokens, $oldName, $newName);
                 }
             }
-        }
+//        }
 
         return $tokens->generateCode();
     }

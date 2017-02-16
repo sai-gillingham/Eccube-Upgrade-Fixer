@@ -23,6 +23,22 @@ class EditController extends AbstractController
             ->add('file', 'file')
             ->add('create_file', 'text')
             ->getForm();
+
+        $builder
+            ->add('class_name1', 'entity', array(
+                'class' => 'Eccube\Entity\ClassName',
+                'property' => 'name',
+                'empty_value' => '規格1を選択',
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                ),
+            ))
+            ->add('class_name2', 'entity', array(
+                'class' => 'Eccube\Entity\ClassName',
+                'property' => 'name',
+                'empty_value' => '規格2を選択',
+                'required' => false,
+            ));
     }
 
 }

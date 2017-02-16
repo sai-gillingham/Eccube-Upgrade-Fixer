@@ -2,6 +2,7 @@
 
 namespace Eccube\Controller\Admin\Order;
 
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Eccube\Form\Type\Front\CustomerLoginType;
 use Eccube\Form\Type\Admin\OrderType;
 use Eccube\Application;
@@ -25,6 +26,22 @@ class EditController extends AbstractController
             ->add('file', 'file')
             ->add('create_file', 'text')
             ->getForm();
+
+        $builder
+            ->add('class_name1', EntityType::class, array(
+                'class' => 'Eccube\Entity\ClassName',
+                'property' => 'name',
+                'empty_value' => '規格1を選択',
+                'constraints' => array(
+                    new Assert\NotBlank(),
+                ),
+            ))
+            ->add('class_name2', EntityType::class, array(
+                'class' => 'Eccube\Entity\ClassName',
+                'property' => 'name',
+                'empty_value' => '規格2を選択',
+                'required' => false,
+            ));
     }
 
 }
