@@ -3,6 +3,7 @@
 namespace Symfony\Upgrade\Fixer;
 
 use Symfony\CS\Tokenizer\Tokens;
+use Symfony\Upgrade\Util\ArrayTokenUtil;
 
 class FormOptionNamesFixer extends FormTypeFixer
 {
@@ -51,20 +52,12 @@ class FormOptionNamesFixer extends FormTypeFixer
                     $setDefaultStartTokenIndexes = array_keys($setDefaultStartTokens);
                     $setDefaultEndIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, end($setDefaultStartTokenIndexes));
 
-                    $currentIndex = end($setDefaultStartTokenIndexes);
-                    foreach (self::$FIELD_NAMES as $oldName => $newName) {
-                        $oldFiledTokens = null;
-                        do {
-                            $oldFiledTokens = $tokens->findSequence([
-                                [T_CONSTANT_ENCAPSED_STRING, '\''.$oldName.'\''],
-                                [T_DOUBLE_ARROW]
-                            ], $currentIndex, $setDefaultEndIndex);
-                            if ($oldFiledTokens) {
-                                $oldFiledTokenIndexes = array_keys($oldFiledTokens);
-                                $this->replaceOldNameToNewName($oldName, $newName, $tokens, $tokens[$oldFiledTokenIndexes[0]], $oldFiledTokenIndexes[0]);
-                                $currentIndex = end($oldFiledTokenIndexes) + 1;
-                            }
-                        } while ($oldFiledTokens);
+                    $arrayKeyTokens = ArrayTokenUtil::getArrayKeyTokens($tokens, end($setDefaultStartTokenIndexes), $setDefaultEndIndex);
+                    foreach($arrayKeyTokens as $index => $token) {
+                        $filedName = preg_replace('/\'(.*)\'/', '\1', $token->getContent());
+                        if (isset(self::$FIELD_NAMES[$filedName])) {
+                            $this->replaceOldNameToNewName($filedName, self::$FIELD_NAMES[$filedName], $tokens, $token, $index);
+                        }
                     }
                 }
             }

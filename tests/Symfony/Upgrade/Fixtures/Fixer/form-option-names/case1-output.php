@@ -13,6 +13,12 @@ class RegistrationFormType extends AbstractType
         $resolver->setDefaults(array(
             'class' => 'Eccube\Entity\MailTemplate',
             'placeholder' => '-',
+            'tel01_options' => array(
+                'constraints' => array(
+                    new Assert\Type(array('type' => 'numeric', 'message' => 'form.type.numeric.invalid')),
+                    new Assert\Length(array('max' => $this->config['tel_len'], 'min' => $this->config['tel_len_min'])),
+                ),
+            ),
         ));
     }
 
