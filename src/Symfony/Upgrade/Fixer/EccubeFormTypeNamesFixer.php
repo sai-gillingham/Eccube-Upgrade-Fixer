@@ -97,6 +97,7 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
 
         'entity' => 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
 
+        'form' => 'Symfony\Component\Form\Extension\Core\Type\FormType',
         'birthday' => 'Symfony\Component\Form\Extension\Core\Type\BirthdayType',
         'button' => 'Symfony\Component\Form\Extension\Core\Type\ButtonType',
         'checkbox' => 'Symfony\Component\Form\Extension\Core\Type\CheckboxType',
