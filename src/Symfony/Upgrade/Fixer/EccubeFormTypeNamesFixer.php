@@ -93,6 +93,7 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         'admin_system_masterdata_edit' => 'Eccube\Form\Type\Admin\MasterdataEditType',
         'plugin_local_install' => 'Eccube\Form\Type\Admin\PluginLocalInstallType',
         'plugin_management' => 'Eccube\Form\Type\Admin\PluginManagementType',
+        'add_cart' => 'Eccube\Form\Type\AddCartType',
 
         'entity' => 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
 
