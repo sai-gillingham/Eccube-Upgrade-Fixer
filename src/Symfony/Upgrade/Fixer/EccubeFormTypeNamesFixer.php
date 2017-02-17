@@ -93,8 +93,39 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         'admin_system_masterdata_edit' => 'Eccube\Form\Type\Admin\MasterdataEditType',
         'plugin_local_install' => 'Eccube\Form\Type\Admin\PluginLocalInstallType',
         'plugin_management' => 'Eccube\Form\Type\Admin\PluginManagementType',
+
         'entity' => 'Symfony\Bridge\Doctrine\Form\Type\EntityType',
-        'collection' => 'Symfony\Component\Form\Extension\Core\Type\CollectionType'
+
+        'birthday' => 'Symfony\Component\Form\Extension\Core\Type\BirthdayType',
+        'button' => 'Symfony\Component\Form\Extension\Core\Type\ButtonType',
+        'checkbox' => 'Symfony\Component\Form\Extension\Core\Type\CheckboxType',
+        'choice' => 'Symfony\Component\Form\Extension\Core\Type\ChoiceType',
+        'collection' => 'Symfony\Component\Form\Extension\Core\Type\CollectionType',
+        'country' => 'Symfony\Component\Form\Extension\Core\Type\CountryType',
+        'currency' => 'Symfony\Component\Form\Extension\Core\Type\CurrencyType',
+        'datetime' => 'Symfony\Component\Form\Extension\Core\Type\DateTimeType',
+        'date' => 'Symfony\Component\Form\Extension\Core\Type\DateType',
+        'email' => 'Symfony\Component\Form\Extension\Core\Type\EmailType',
+        'file' => 'Symfony\Component\Form\Extension\Core\Type\FileType',
+        'hidden' => 'Symfony\Component\Form\Extension\Core\Type\HiddenType',
+        'integer' => 'Symfony\Component\Form\Extension\Core\Type\IntegerType',
+        'language' => 'Symfony\Component\Form\Extension\Core\Type\LanguageType',
+        'locale' => 'Symfony\Component\Form\Extension\Core\Type\LocaleType',
+        'money' => 'Symfony\Component\Form\Extension\Core\Type\MoneyType',
+        'number' => 'Symfony\Component\Form\Extension\Core\Type\NumberType',
+        'password' => 'Symfony\Component\Form\Extension\Core\Type\PasswordType',
+        'percent' => 'Symfony\Component\Form\Extension\Core\Type\PercentType',
+        'radio' => 'Symfony\Component\Form\Extension\Core\Type\RadioType',
+        'range' => 'Symfony\Component\Form\Extension\Core\Type\RangeType',
+        'repeated' => 'Symfony\Component\Form\Extension\Core\Type\RepeatedType',
+        'reset' => 'Symfony\Component\Form\Extension\Core\Type\ResetType',
+        'search' => 'Symfony\Component\Form\Extension\Core\Type\SearchType',
+        'submit' => 'Symfony\Component\Form\Extension\Core\Type\SubmitType',
+        'text' => 'Symfony\Component\Form\Extension\Core\Type\TextType',
+        'textarea' => 'Symfony\Component\Form\Extension\Core\Type\TextareaType',
+        'time' => 'Symfony\Component\Form\Extension\Core\Type\TimeType',
+        'timezone' => 'Symfony\Component\Form\Extension\Core\Type\TimezoneType',
+        'url' => 'Symfony\Component\Form\Extension\Core\Type\UrlType',
     );
 
     /**
@@ -138,15 +169,20 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         [T_CONSTANT_ENCAPSED_STRING]
     ];
 
+    private static $SEC_ENTRY_TYPE = [
+        [T_CONSTANT_ENCAPSED_STRING, "'entry_type'"],
+        [T_DOUBLE_ARROW],
+        [T_CONSTANT_ENCAPSED_STRING]
+    ];
+
     public function fix(\SplFileInfo $file, $content)
     {
         $tokens = Tokens::fromCode($content);
 
         if ($this->isFormType($tokens)) {
             $this->fixTypeNameInFormType($tokens);
-        } else {
-            $this->fixTypeNameForFormFactory($tokens);
         }
+        $this->fixTypeNameForFormFactory($tokens);
 
         return $tokens->generateCode();
     }
@@ -168,7 +204,7 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
      */
     protected function fixTypeNameForFormFactory($tokens)
     {
-        foreach ([self::$SEQ_FORM_TYPE_CREATE_BUILDER, self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER, self::$SEQ_FORM_BUILDER_ADD] as $sequence) {
+        foreach ([self::$SEQ_FORM_TYPE_CREATE_BUILDER, self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER, self::$SEQ_FORM_BUILDER_ADD, self::$SEC_ENTRY_TYPE] as $sequence) {
             $currentIndex = 0;
             $matchedTokens = null;
             do {

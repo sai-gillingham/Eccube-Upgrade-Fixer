@@ -2,7 +2,10 @@
 
 namespace Eccube\Controller\Admin\Order;
 
+use Eccube\Form\Type\Admin\ProductClassType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Eccube\Form\Type\Front\CustomerLoginType;
 use Eccube\Form\Type\Admin\OrderType;
 use Eccube\Application;
@@ -23,8 +26,8 @@ class EditController extends AbstractController
         $builder = $app['form.factory']->createNamedBuilder('', CustomerLoginType::class);
 
         $form = $app['form.factory']->createBuilder('form')
-            ->add('file', 'file')
-            ->add('create_file', 'text')
+            ->add('file', FileType::class)
+            ->add('create_file', TextType::class)
             ->getForm();
 
         $builder
@@ -41,6 +44,14 @@ class EditController extends AbstractController
                 'property' => 'name',
                 'empty_value' => '規格2を選択',
                 'required' => false,
+            ));
+
+        $builder
+            ->add('product_classes', CollectionType::class, array(
+                'entry_type' => ProductClassType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'data' => $ProductClasses,
             ));
     }
 

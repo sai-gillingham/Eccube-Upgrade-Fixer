@@ -10,27 +10,25 @@ class FormOptionNamesFixer extends FormTypeFixer
     {
         $tokens = Tokens::fromCode($content);
 
-//        if ($this->isFormType($tokens)) {
-            $fieldNameTokenSets = [
-                [[T_CONSTANT_ENCAPSED_STRING]],
-                [[T_STRING], [T_DOUBLE_COLON], [CT_CLASS_CONSTANT]],
+        $fieldNameTokenSets = [
+            [[T_CONSTANT_ENCAPSED_STRING]],
+            [[T_STRING], [T_DOUBLE_COLON], [CT_CLASS_CONSTANT]],
+        ];
+
+        foreach ($fieldNameTokenSets as $fieldNameTokens) {
+            $fieldNames = [
+                'precision' => 'scale',
+                'virtual' => 'inherit_data',
+                'property' => 'choice_label',
+                'empty_value' => 'placeholder',
+                'type' => 'entry_type',
+                'empty_data' => null,
             ];
 
-            foreach ($fieldNameTokenSets as $fieldNameTokens) {
-                $fieldNames = [
-                    'precision' => 'scale',
-                    'virtual' => 'inherit_data',
-                    'property' => 'choice_label',
-                    'empty_value' => 'placeholder',
-                    'type' => 'entry_type',
-                    'empty_data' => null,
-                ];
-
-                foreach ($fieldNames as $oldName => $newName) {
-                    $this->fixOptionNames($tokens, $fieldNameTokens, $oldName, $newName);
-                }
+            foreach ($fieldNames as $oldName => $newName) {
+                $this->fixOptionNames($tokens, $fieldNameTokens, $oldName, $newName);
             }
-//        }
+        }
 
         return $tokens->generateCode();
     }

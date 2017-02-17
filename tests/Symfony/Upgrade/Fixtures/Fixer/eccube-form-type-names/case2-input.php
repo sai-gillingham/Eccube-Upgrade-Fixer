@@ -39,6 +39,14 @@ class EditController extends AbstractController
                 'empty_value' => '規格2を選択',
                 'required' => false,
             ));
+
+        $builder
+            ->add('product_classes', CollectionType::class, array(
+                'entry_type' => 'admin_product_class',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'data' => $ProductClasses,
+            ));
     }
 
 }
