@@ -7,6 +7,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class RegistrationFormType extends AbstractType
 {
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'class' => 'Eccube\Entity\MailTemplate',
+            'empty_value' => '-',
+        ));
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
