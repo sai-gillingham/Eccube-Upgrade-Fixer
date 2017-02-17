@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Eccube\Form\Type\Front\CustomerLoginType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Eccube\Form\Type\Admin\OrderType;
 use Eccube\Application;
 use Eccube\Controller\AbstractController;
@@ -25,7 +26,7 @@ class EditController extends AbstractController
 
         $builder = $app['form.factory']->createNamedBuilder('', CustomerLoginType::class);
 
-        $form = $app['form.factory']->createBuilder('form')
+        $form = $app['form.factory']->createBuilder(FormType::class)
             ->add('file', FileType::class)
             ->add('create_file', TextType::class)
             ->getForm();

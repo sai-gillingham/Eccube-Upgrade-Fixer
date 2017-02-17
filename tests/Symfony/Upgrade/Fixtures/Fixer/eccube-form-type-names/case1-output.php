@@ -21,7 +21,7 @@ class RegistrationFormType extends AbstractType
 
         $builder->add(
             $builder
-                ->create('company_kana', TextType:class, array(
+                ->create('company_kana', TextType::class, array(
                     'label' => '会社名(フリガナ)',
                     'required' => false,
                     'constraints' => array(

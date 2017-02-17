@@ -171,6 +171,15 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
         [T_CONSTANT_ENCAPSED_STRING]
     ];
 
+    private static $SEQ_FORM_BUILDER_CREATE = [
+        [T_OBJECT_OPERATOR],
+        [T_STRING, 'create'],
+        '(',
+        [T_CONSTANT_ENCAPSED_STRING],
+        ',',
+        [T_CONSTANT_ENCAPSED_STRING]
+    ];
+
     private static $SEC_ENTRY_TYPE = [
         [T_CONSTANT_ENCAPSED_STRING, "'entry_type'"],
         [T_DOUBLE_ARROW],
@@ -183,6 +192,7 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
 
         if ($this->isFormType($tokens)) {
             $this->fixTypeNameInFormType($tokens);
+            $this->doFixTypeNameForFormFactory($tokens, self::$SEQ_FORM_BUILDER_CREATE);
         }
         $this->fixTypeNameForFormFactory($tokens);
 
@@ -207,19 +217,24 @@ class EccubeFormTypeNamesFixer extends FormTypeNamesFixer
     protected function fixTypeNameForFormFactory($tokens)
     {
         foreach ([self::$SEQ_FORM_TYPE_CREATE_BUILDER, self::$SEQ_FORM_TYPE_CREATE_NAMED_BUILDER, self::$SEQ_FORM_BUILDER_ADD, self::$SEC_ENTRY_TYPE] as $sequence) {
-            $currentIndex = 0;
-            $matchedTokens = null;
-            do {
-                $beforeTokenSize = count($tokens);
-
-                $matchedTokens = $this->fixTypeNameForSequence($tokens, $sequence, $currentIndex);
-                if ($matchedTokens) {
-                    $indexes = array_keys($matchedTokens);
-                    $afterTokenSize = count($tokens);
-                    $currentIndex = end($indexes) + $afterTokenSize - $beforeTokenSize;
-                }
-            } while ($matchedTokens);
+            $this->doFixTypeNameForFormFactory($tokens, $sequence);
         }
+    }
+
+    private function doFixTypeNameForFormFactory($tokens, $sequence)
+    {
+        $currentIndex = 0;
+        $matchedTokens = null;
+        do {
+            $beforeTokenSize = count($tokens);
+
+            $matchedTokens = $this->fixTypeNameForSequence($tokens, $sequence, $currentIndex);
+            if ($matchedTokens) {
+                $indexes = array_keys($matchedTokens);
+                $afterTokenSize = count($tokens);
+                $currentIndex = end($indexes) + $afterTokenSize - $beforeTokenSize;
+            }
+        } while ($matchedTokens);
     }
 
     private function fixTypeNameForSequence($tokens, $sequence, $currentIndex)
