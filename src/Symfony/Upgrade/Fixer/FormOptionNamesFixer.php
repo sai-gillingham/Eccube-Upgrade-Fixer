@@ -77,9 +77,7 @@ class FormOptionNamesFixer extends FormTypeFixer
         ];
 
         foreach ($fieldNameTokenSets as $fieldNameTokens) {
-            foreach (self::$FIELD_NAMES as $oldName => $newName) {
-                $this->fixOptionNames($tokens, $fieldNameTokens, $oldName, $newName);
-            }
+            $this->fixOptionNames($tokens, $fieldNameTokens);
         }
 
         return $tokens->generateCode();
@@ -90,7 +88,7 @@ class FormOptionNamesFixer extends FormTypeFixer
         return 'Options precision and virtual was renamed to scale and inherit_data.';
     }
 
-    private function fixOptionNames(Tokens $tokens, $fieldNameTokens, $oldName, $newName, $start = 0, $end = null)
+    private function fixOptionNames(Tokens $tokens, $fieldNameTokens, $start = 0, $end = null)
     {
         $matchedTokens = $tokens->findSequence(array_merge(
             [
@@ -117,20 +115,31 @@ class FormOptionNamesFixer extends FormTypeFixer
             return;
         }
 
-        do {
-            $index = $tokens->getNextMeaningfulToken($index);
-            $token = $tokens[$index];
+        $addBlockStartIndex = $matchedTokenIndexes[2];
+        $addBlockEndIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $addBlockStartIndex);
 
-            if (!$token->isGivenKind(T_CONSTANT_ENCAPSED_STRING)) {
-                continue;
+        $currentIndex = $addBlockStartIndex;
+
+        while ($currentIndex < $addBlockEndIndex) {
+            $arrayRange = ArrayTokenUtil::getNextArrayTokenRange($tokens, $currentIndex, $addBlockEndIndex);
+
+            if (!$arrayRange) {
+                break;
             }
 
-            if ("'$oldName'" === $token->getContent()) {
-                $this->replaceOldNameToNewName($oldName, $newName, $tokens, $token, $index);
-            }
-        } while (!in_array($token->getContent(), [')', ']']));
+            $arrayKeyTokens = ArrayTokenUtil::getArrayKeyTokens($tokens, array_shift($arrayRange), end($arrayRange));
 
-        $this->fixOptionNames($tokens, $fieldNameTokens, $oldName, $newName, $index, $end);
+            foreach($arrayKeyTokens as $index => $token) {
+                $filedName = preg_replace('/\'(.*)\'/', '\1', $token->getContent());
+                if (key_exists($filedName, self::$FIELD_NAMES)) {
+                    $this->replaceOldNameToNewName($filedName, self::$FIELD_NAMES[$filedName], $tokens, $token, $index);
+                }
+            }
+
+            $currentIndex = end($arrayRange) + 1;
+        }
+
+        $this->fixOptionNames($tokens, $fieldNameTokens, $currentIndex);
     }
 
     private function replaceOldNameToNewName($oldName, $newName, $tokens, $token, $tokenIndex)

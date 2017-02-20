@@ -15,9 +15,30 @@ class ArrayTokenUtil
      * @param null $end
      * @return array
      */
+    public static function getNextArrayTokenRange($tokens, $start = 0, $end = null)
+    {
+        $startTokenIndex = $tokens->getNextTokenOfKind($start, [[T_ARRAY], '[']);
+        if (!$startTokenIndex) {
+            return [];
+        }
+
+        $endTokenIndex = self::getArrayEndIndex($tokens, $startTokenIndex);
+        return range($startTokenIndex, $endTokenIndex);
+    }
+
+    /**
+     * arrayのキーを示すtokenの配列を返します。
+     * @param Tokens|$tokens
+     * @param int $start
+     * @param null $end
+     * @return array
+     */
     public static function getArrayKeyTokens($tokens, $start = 0, $end = null)
     {
-        $start = $tokens->getNextTokenOfKind($start, [[T_ARRAY], '[']);
+
+        if (($tokens[$start]->isGivenKind([T_ARRAY]) || $tokens[$start]->getContent() === '[') === false) {
+            $start = $tokens->getNextTokenOfKind($start, [[T_ARRAY], '[']);
+        }
 
         // `array`の場合
         if ($tokens[$start]->getId() == T_ARRAY) {

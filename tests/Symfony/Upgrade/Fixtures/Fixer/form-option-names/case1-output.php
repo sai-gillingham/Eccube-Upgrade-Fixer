@@ -50,5 +50,15 @@ class RegistrationFormType extends AbstractType
                 'entry_type' => 'shipping',
             ))
         ;
+
+        $builder
+            ->add('line_max', TextType::class, array(
+                'label' => '表示行数',
+                'data' => '50',
+                'constraints' => array(
+                    new Assert\Type(array('type' => 'numeric', 'message' => 'form.type.numeric.invalid')),
+                    new Assert\NotBlank(),
+                ),
+            ));
     }
 }
