@@ -16,6 +16,22 @@ class RegistrationFormType extends AbstractType
         $builder->add('gender', 'choice', array(
             'choices' => array_flip($arr)
         ));
+        $builder->add('category_id', 'entity', array(
+            'class' => 'Eccube\Entity\Category',
+            'choice_label' => 'NameWithLevel',
+            'choices' => $Categories,
+            'placeholder' => '全ての商品',
+            'required' => false,
+            'label' => '商品カテゴリから選ぶ',
+        ));
+        $builder->add('category_id', EntityType::class, array(
+            'class' => 'Eccube\Entity\Category',
+            'choice_label' => 'NameWithLevel',
+            'choices' => $Categories,
+            'placeholder' => '全ての商品',
+            'required' => false,
+            'label' => '商品カテゴリから選ぶ',
+        ));
     }
 
 }
