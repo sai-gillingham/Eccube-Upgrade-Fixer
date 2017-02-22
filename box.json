@@ -20,7 +20,7 @@
         "Herrera\\Box\\Compactor\\Php"
     ],
     "compression": "GZ",
-    "main": "bin/symfony-upgrade-fixer",
+    "main": "bin/eccube-upgrade-fixer",
     "output": "build/eccube-upgrade-fixer.phar",
     "stub": true,
     "chmod": "0755"
