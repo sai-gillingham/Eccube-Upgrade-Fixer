@@ -24,32 +24,61 @@ class FormChoiceTypeArrayFixer extends FormTypeFixer
 
         if ($this->isFormType($tokens)) {
             $currentIndex = 0;
-
+            $addStartTokens = null;
             do {
-                $matchedTokens = $tokens->findSequence([
-                    [T_CONSTANT_ENCAPSED_STRING, '\'choices\''],
-                    [T_DOUBLE_ARROW],
+                $addStartTokens = $tokens->findSequence([
+                    [T_OBJECT_OPERATOR],
+                    [T_STRING, 'add'],
+                    '(',
+                    [T_CONSTANT_ENCAPSED_STRING],
+                    ',',
+                    [T_CONSTANT_ENCAPSED_STRING]
+                ], $currentIndex) ?: $tokens->findSequence([
+                    [T_OBJECT_OPERATOR],
+                    [T_STRING, 'add'],
+                    '(',
+                    [T_CONSTANT_ENCAPSED_STRING],
+                    ',',
+                    [T_STRING],
+                    [T_DOUBLE_COLON],
+                    [CT_CLASS_CONSTANT]
                 ], $currentIndex);
-                if ($matchedTokens) {
-                    $matchedIndexes = array_keys($matchedTokens);
-                    $matchedIndex = $matchedIndexes[count($matchedIndexes)-1];
-                    $startIndex = $tokens->getNextMeaningfulToken($matchedIndex);
-                    /** @var Token $t */
-                    $t = $tokens[$startIndex];
-                    switch ($t->getId()) {
-                        case T_ARRAY:
-                            $endIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $startIndex + 1);
-                            $currentIndex = $this->addArrayFlip($tokens, $startIndex, $endIndex);
-                            break;
-                        case T_VARIABLE:
-                            $currentIndex = $this->addArrayFlip($tokens, $startIndex, $startIndex + 1);
-                            break;
-                        default:
-                            $currentIndex = $startIndex+1;
-                            break;
+                if ($addStartTokens) {
+                    $addStartTokenIndexes = array_keys($addStartTokens);
+                    $addEndIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $addStartTokenIndexes[2]);
+                    $currentIndex = end($addStartTokenIndexes);
+
+                    $typeToken = $addStartTokens[$addStartTokenIndexes[5]];
+
+                    if ($typeToken->getContent() === "'entity'" || ($typeToken->getId() === T_STRING && $typeToken->getContent() === 'EntityType') ) {
+                        continue;
+                    }
+
+                    $matchedTokens = $tokens->findSequence([
+                        [T_CONSTANT_ENCAPSED_STRING, '\'choices\''],
+                        [T_DOUBLE_ARROW],
+                    ], $currentIndex, $addEndIndex);
+                    if ($matchedTokens) {
+                        $matchedIndexes = array_keys($matchedTokens);
+                        $matchedIndex = $matchedIndexes[count($matchedIndexes)-1];
+                        $startIndex = $tokens->getNextMeaningfulToken($matchedIndex);
+                        /** @var Token $t */
+                        $t = $tokens[$startIndex];
+                        switch ($t->getId()) {
+                            case T_ARRAY:
+                                $endIndex = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $startIndex + 1);
+                                $currentIndex = $this->addArrayFlip($tokens, $startIndex, $endIndex);
+                                break;
+                            case T_VARIABLE:
+                                $currentIndex = $this->addArrayFlip($tokens, $startIndex, $startIndex + 1);
+                                break;
+                            default:
+                                $currentIndex = $startIndex+1;
+                                break;
+                        }
                     }
                 }
-            } while ($matchedTokens);
+            } while ($addStartTokens);
         }
 
         return $tokens->generateCode();
