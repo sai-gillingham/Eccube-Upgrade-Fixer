@@ -5,6 +5,7 @@ namespace Symfony\Upgrade\Fixer;
 
 
 use Symfony\CS\Tokenizer\Tokens;
+use Symfony\Upgrade\Util\UseTokenUtil;
 
 class ServiceProviderFixer extends AbstractFixer
 {
@@ -13,10 +14,50 @@ class ServiceProviderFixer extends AbstractFixer
     {
         $tokens = Tokens::fromCode($content);
         if ($this->isServiceProviderType($tokens)) {
+            $this->fixServiceInterface($tokens);
             $this->fixShare($tokens);
             $this->fixExtend($tokens);
         }
         return $tokens->generateCode();
+    }
+
+    private function fixServiceInterface(Tokens $tokens)
+    {
+
+        /*
+         * Silex\ServiceProviderInterface -> Pimple\ServiceProviderInterface に変更
+         */
+        $useTokens = $tokens->findSequence([
+            [T_USE],
+            [T_STRING, 'Silex'],
+            [T_NS_SEPARATOR],
+            [T_STRING, 'ServiceProviderInterface']
+        ]);
+        if ($useTokens) {
+            $useTokenIndexes = array_keys($useTokens);
+            $useTokens[$useTokenIndexes[1]]->setContent('Pimple');
+        }
+
+        /*
+         * register(Appplication $app) -> register(Container $app)に変更
+         */
+        $registerFunctionTokens = $tokens->findSequence([
+            [T_FUNCTION],
+            [T_STRING, 'register'],
+            '(',
+            [T_STRING]
+        ]);
+
+        if ($registerFunctionTokens) {
+            $registerFunctionTokenIndexes = array_keys($registerFunctionTokens);
+            $classNameMap = UseTokenUtil::getClassNameMap($tokens);
+            $arg0Token = $registerFunctionTokens[$registerFunctionTokenIndexes[3]];
+            $arg0Content = $arg0Token->getContent();
+            if (isset($classNameMap[$arg0Content]) && $classNameMap[$arg0Content] == ['Silex', 'Application']) {
+                $arg0Token->setContent('Container');
+                $this->addUseStatement($tokens, ['Pimple', 'Container']);
+            }
+        }
     }
 
     /**
