@@ -2,14 +2,15 @@
 
 namespace Eccube\ServiceProvider;
 
+use Pimple\Container;
 use Eccube\Application;
 use Silex\Application as BaseApplication;
-use Silex\ServiceProviderInterface;
+use Pimple\ServiceProviderInterface;
 
 class EccubeServiceProvider implements ServiceProviderInterface
 {
 
-    public function register(BaseApplication $app)
+    public function register(Container $app)
     {
         // Service
         $app['eccube.service.system'] = function () use ($app) {
