@@ -9,7 +9,7 @@ class Application extends BaseApplication
 {
     public function __construct()
     {
-        parent::__construct('Symfony Upgrade Fixer', Fixer::VERSION);
+        parent::__construct('EC-CUBE Upgrade Fixer', Fixer::VERSION);
 
         $this->add(new Command\FixCommand());
         $this->add(new Command\ReadmeCommand());
