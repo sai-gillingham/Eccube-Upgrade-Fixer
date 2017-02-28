@@ -11,6 +11,12 @@ php:
 
 before_script:
   - composer install --dev
+  - composer require --dev kherge/box
 
 script:
     - phpunit
+    - |
+        if [[ $TRAVIS_PHP_VERSION = '7.0' ]]; then
+            vendor/bin/box build
+            ls -la build
+        fi
