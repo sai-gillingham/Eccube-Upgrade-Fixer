@@ -1,4 +1,4 @@
-/bin/
+!/bin/eccube-upgrade-fixer
 /build/
 /phpunit.xml
 /vendor/
