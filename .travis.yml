@@ -23,8 +23,7 @@ before_deploy:
       fi
 deploy:
   provider: releases
-  api_key:
-    secure: uNHM83Gyoiuw5GdarcwDIxKWUjRWWi7IfUngjdQROFizNlsrO756ERUpHh3MmeZGJaKIZRegNw9OtMTjT5MZfTwV9aqygXYKwJjOGSaiNzIXpCjWGyJ6q0hQ92QgPqfNGFbdNqSFUqbY9EdZ7bnS0e4gyHAJAIIQ+GiVk/4ktJp+kmfNv6/E2NJXeQV1BcGqvPa5fAKouw3xFbSKseNNtVLjFAocNMBZfVVJfL4HyYVhCoxkx3gtaqRRf4B+Auk5Uu5AOWNLNNFXVeNvy+06gtdb7KBK+8E6fEIa3dhvqJlFv2bB7Byv1LpCIPlsLn8E+lXxu4goACMMFgQ1MVpl0H6ykHcGx/ZhslDzztIXNLB8DwINBHCnUyIxADMM8msWpNoo5NWD2+gX3eDVx48KUQzUcYmjY+Wh1Isyr2W9mF/a2mkCkF3FG1mHmhxFCIPRop9rcD6pX1+g91E5AgC4wYCNHp/kA2ZH+4m1msXbCkex9SJsEART3Kp4f+3OW8A4hGKL9USS1ZQ+E4aqLhzEiq84+IKwmBnYZpNs4Q2OvT1BPM8IB50gzK4IEr7bG58trkvadAE/kN34Y14jLFbz3X9AFDBcWDy6sTUdOnRofjzSNRBgQZB3EDuZR3cBcSMKw49Fpv2jPdHLDn+aXUgXy85OzpeGvEEEKBiHyKi9B64=
+  api_key: $GITHUB_TOKEN
   file_glob: true
   file: build/*.phar
   skip_cleanup: true
