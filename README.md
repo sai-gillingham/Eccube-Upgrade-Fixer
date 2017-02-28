@@ -15,7 +15,7 @@ EC-CUBE3.0系のプラグインプロジェクトを解析して、EC-CUBE3.1系
 以下のコマンドで簡単に``eccube-upgrade-fixer``コマンドをインストールできます。
 
 ```bash
-$ sudo wget https://github.com/EC-CUBE/Eccube-Upgrade-Fixer/releases/download/v0.1.4/eccube-upgrade-fixer.phar -O /usr/local/bin/eccube-upgrade-fixer
+$ sudo wget https://github.com/EC-CUBE/Eccube-Upgrade-Fixer/releases/download/v0.1.5-eccube-3.1.0-aplpha/eccube-upgrade-fixer.phar -O /usr/local/bin/eccube-upgrade-fixer
 $ sudo chmod a+x /usr/local/bin/eccube-upgrade-fixer
 ```
 インストールしたら、``eccube-upgrade-fixer``コマンドが使用できます。
