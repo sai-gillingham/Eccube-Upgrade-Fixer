@@ -36,13 +36,13 @@ $ eccube-upgrade-fixer fix /path/to/file
 ``--dry-run``オプションを付けると、ファイルは変更せずに変換が必要なファイルを表示します。
 
 ```bash
-$ symfony-upgrade-fixer fix /path/to/code --dry-run
+$ eccube-upgrade-fixer fix /path/to/code --dry-run
 ```
 
 ``--no-use-reorder``オプションを指定した場合は、use文の並び替えを行いません。
 
 ```bash
-$ symfony-upgrade-fixer fix /path/to/code --no-use-reorder
+$ eccube-upgrade-fixer fix /path/to/code --no-use-reorder
 ```
 
 ##　利用可能なFixer一覧
