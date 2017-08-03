@@ -45,7 +45,16 @@ $ eccube-upgrade-fixer fix /path/to/code --dry-run
 $ eccube-upgrade-fixer fix /path/to/code --no-use-reorder
 ```
 
-##　利用可能なFixer一覧
+### Dockerで利用する
+
+プラグインプロジェクトのディレクトリをマウントすれば以下のようにDockerで実行することができます。
+
+```bash
+docker run --rm -v /path/to/plugin:/app eccube/upgrade-fixer fix /app
+```
+
+
+## 利用可能なFixer一覧
 
 | Name  | Description |
 | ----  | ----------- |
