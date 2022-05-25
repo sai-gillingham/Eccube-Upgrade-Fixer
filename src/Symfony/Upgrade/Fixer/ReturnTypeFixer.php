@@ -5,7 +5,7 @@ namespace Symfony\Upgrade\Fixer;
 use Symfony\CS\Tokenizer\Token;
 use Symfony\CS\Tokenizer\Tokens;
 
-abstract class ReturnTypeFixer extends AbstractFixer
+abstract class ReturnTypeFixer extends RenameFixer
 {
     public function upsertReturnType(Tokens $tokens, string $class, string $function, string $returnType) {
         // Update return type
@@ -16,7 +16,7 @@ abstract class ReturnTypeFixer extends AbstractFixer
             '(',
             ')'
         ]);
-        var_dump($matchedTokens);
+//        var_dump($matchedTokens);
         if ($matchedTokens) {
             $useTokenIndexes = array_keys($matchedTokens);
             $tokens->insertAt(
@@ -29,7 +29,5 @@ abstract class ReturnTypeFixer extends AbstractFixer
                 ],
             );
         }
-
     }
-
 }

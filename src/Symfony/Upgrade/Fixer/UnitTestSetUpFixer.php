@@ -14,8 +14,12 @@ class UnitTestSetUpFixer extends ReturnTypeFixer
     {
         $tokens = Tokens::fromCode($content);
         $this->upsertReturnType($tokens, '....', 'setUp', 'void');
+        $this->upsertReturnType($tokens, '...', 'tearDown', 'void');
+        $this->renameChainMethods($tokens, 'assertContains', 'assertStringContainsString');
+        $this->renameChainMethods($tokens, 'assertRegexp', 'assertMatchesRegularExpression');
         return $tokens->generateCode();
     }
+
 
     /**
      * @inheritDoc

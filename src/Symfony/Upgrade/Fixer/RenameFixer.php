@@ -69,4 +69,23 @@ abstract class RenameFixer extends AbstractFixer
 
         $this->renameConstants($tokens, $className, $old, $new);
     }
+
+    protected function renameChainMethods(Tokens &$tokens, $old, $new)
+    {
+        // Change Swift_Message class
+        $subjectFunctionUpdate = $tokens->findSequence([
+            [T_OBJECT_OPERATOR],
+            [T_STRING, $old],
+        ]);
+
+        if ($subjectFunctionUpdate === null) {
+            return;
+        }
+
+        if ($subjectFunctionUpdate) {
+            $useTokenIndexes = array_keys($subjectFunctionUpdate);
+            $tokens[end($useTokenIndexes)]->setContent($new);
+        }
+        $this->renameChainMethods($tokens, $old, $new);
+    }
 }
