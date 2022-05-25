@@ -153,6 +153,6 @@ class SwiftMailerChange extends AbstractFixer
      */
     public function getDescription()
     {
-        // TODO: Implement getDescription() method.
+        return 'Update from \Swift_Mailer to Symfony 5 MailerInterface';
     }
 }
