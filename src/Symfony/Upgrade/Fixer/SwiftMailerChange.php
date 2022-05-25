@@ -4,6 +4,7 @@ namespace Symfony\Upgrade\Fixer;
 
 use Symfony\CS\Tokenizer\Token;
 use Symfony\CS\Tokenizer\Tokens;
+use UnexpectedValueException;
 
 class SwiftMailerChange extends AbstractFixer
 {
@@ -46,8 +47,8 @@ class SwiftMailerChange extends AbstractFixer
             $this->_replaceChainFunction($tokens, 'setBody', 'text');
             $this->_replaceChainFunction($tokens, 'addPart', 'html');
 
-            // Replace comments
-//            $this->_replacePHPDOCComment($tokens);
+            // Replace any reference to type of Swift_Message to MailInterface
+            $this->_parameterTypeFix($tokens);
         }
         return $tokens->generateCode();
     }
@@ -66,7 +67,8 @@ class SwiftMailerChange extends AbstractFixer
         }
     }
 
-    private function _replaceArrayWithAddressObject(Tokens &$tokens) {
+    private function _replaceArrayWithAddressObject(Tokens &$tokens)
+    {
         $arrayStart = $tokens->findSequence([
             [T_OBJECT_OPERATOR],
             [T_STRING, 'setFrom'],
@@ -107,46 +109,42 @@ class SwiftMailerChange extends AbstractFixer
                 new Token([T_STRING, $emailString]),
                 new Token([T_STRING, ',']),
                 new Token([T_STRING, $emailName]),
-                new Token([T_STRING,')'])
+                new Token([T_STRING, ')'])
             ]);
         }
     }
 
-    private function _replacePHPDOCComment(Tokens &$tokens) {
-        var_dump("1");
+    private function _parameterTypeFix(Tokens &$tokens, int $parameterIndex = 0)
+    {
+        $arrayStart = $tokens->findSequence(
+            [
+                '('
+            ],
+            $parameterIndex
+        );
 
-        $commentsToken = $tokens->findSequence([
-            [T_DOC_COMMENT, '/*']
-        ]);
-        var_dump("2");
-        var_dump($commentsToken);
-
-        if($commentsToken) {
-            $commentsIndex = array_keys($commentsToken);
-            /** @var Token[] $tokens */
-            $tokens[end($commentsIndex) - 1]->setContent('');
-            $tokens[end($commentsIndex)]->setContent('MailerInterface');
+        if ($arrayStart == null) {
+            return;
         }
-        var_dump("3");
 
-
-        $commentsToken = $tokens->findSequence([
-            [T_STRING, '@param'],
-            [T_WHITESPACE, ' '],
-            [T_NS_SEPARATOR],
-            [T_STRING, 'Swift_Message']
-        ]);
-
-        var_dump($commentsToken);
-
-        if($commentsToken) {
-            $commentsIndex = array_keys($commentsToken);
-            /** @var Token[] $tokens */
-            $tokens[end($commentsIndex) - 1]->setContent('');
-            $tokens[end($commentsIndex)]->setContent('MailerInterface');
+        $arrayStartIndex = array_keys($arrayStart);
+        try {
+            $endToken = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, end($arrayStartIndex));
+        } catch (UnexpectedValueException $exception) {
+            echo "NO END";
+            $this->_parameterTypeFix($tokens, end($arrayStartIndex) + 1);
         }
+
+        for ($y = end($arrayStartIndex); $y < $endToken; $y++) {
+            /** @var Token[] $tokens */
+            if ($tokens[$y]->getContent() == 'Swift_Mailer') {
+                $tokens[$y - 1]->setContent('');
+                $tokens[$y]->setContent('MailerInterface');
+            }
+        }
+
+        $this->_parameterTypeFix($tokens, end($arrayStartIndex) + 1);
     }
-
 
     /**
      * @inheritDoc

@@ -91,6 +91,7 @@ class FixCommand extends Command
 
             foreach ($errorsManager->getErrors() as $i => $error) {
                 $output->writeLn(sprintf('%4d) %s', $i + 1, $error['filepath']));
+                $output->writeln($error['message']);
             }
         }
 
