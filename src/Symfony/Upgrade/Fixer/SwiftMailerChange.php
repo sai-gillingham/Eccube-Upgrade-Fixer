@@ -16,11 +16,13 @@ class SwiftMailerChange extends AbstractFixer
     {
         $tokens = Tokens::fromCode($content);
         if ($file->getFilename() == 'MailMagazineService.php') {
+            // Useステートメントの追加
             // Add Use Statements
             $this->addUseStatement($tokens, ['Symfony', 'Component', 'Mailer', 'MailerInterface']);
             $this->addUseStatement($tokens, ['Symfony', 'Component', 'Mime', 'Address']);
             $this->addUseStatement($tokens, ['Symfony', 'Component', 'Mime', 'Email']);
 
+            // Swift_MessageクラスをEmailクラスに変更する
             // Change Swift_Message class to Email Class
             $swiftMessageClass = $tokens->findSequence([
                 [T_NEW],
@@ -34,10 +36,10 @@ class SwiftMailerChange extends AbstractFixer
                 $tokens[end($useTokenIndexes) - 3]->setContent('');
                 $tokens[end($useTokenIndexes) - 2]->setContent('Email');
             }
-
+            // 配列のfrom型をAddressクラスのインスタンスに置き換える
             // Replace "from" array type with Address class instance
             $this->_replaceArrayWithAddressObject($tokens);
-
+            // Swiftのメーラー関数をSymfonyのメーラー関数に置き換える
             // Replace Swift mailer functions with Symfony mailer functions
             $this->_replaceChainFunction($tokens, 'setSubject', 'subject');
             $this->_replaceChainFunction($tokens, 'setFrom', 'from');
@@ -46,7 +48,7 @@ class SwiftMailerChange extends AbstractFixer
             $this->_replaceChainFunction($tokens, 'setReturnPath', 'returnPath');
             $this->_replaceChainFunction($tokens, 'setBody', 'text');
             $this->_replaceChainFunction($tokens, 'addPart', 'html');
-
+            // Swift_Messageの型への参照をすべてMailInterfaceに置き換える
             // Replace any reference to type of Swift_Message to MailInterface
             $this->_parameterTypeFix($tokens);
         }
@@ -56,6 +58,7 @@ class SwiftMailerChange extends AbstractFixer
 
     private function _replaceChainFunction(Tokens &$tokens, string $from, string $to)
     {
+        // Swift_Message クラスを変更する
         // Change Swift_Message class
         $subjectFunctionUpdate = $tokens->findSequence([
             [T_OBJECT_OPERATOR],
