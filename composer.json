@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=5.4",
         "friendsofphp/php-cs-fixer": "^1.10"
     },
     "require-dev": {
