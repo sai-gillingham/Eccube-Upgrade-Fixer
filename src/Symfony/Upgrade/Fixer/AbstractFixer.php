@@ -44,7 +44,7 @@ abstract class AbstractFixer extends BaseAbstractFixer
         return true;
     }
 
-    protected function renameFullUseStatements(Tokens $tokens, array $oldFqcn, array $newFqcn)
+    protected function renameFullUseStatements(Tokens $tokens, array $oldFqcn, array $newFqcn, string $aliasName = '')
     {
         $matchedTokens = $this->getUseStatements($tokens, $oldFqcn);
         if (null === $matchedTokens) {
@@ -65,6 +65,12 @@ abstract class AbstractFixer extends BaseAbstractFixer
             }
             $isFirst = false;
             $newNSP[] = new Token([T_STRING, $fqns]);
+        }
+        if (!empty($aliasName)) {
+            $newNSP[] = new Token([T_STRING,  ' ']);
+            $newNSP[] = new Token([T_AS, 'as']);
+            $newNSP[] = new Token([T_STRING,  ' ']);
+            $newNSP[] = new Token([T_STRING, $aliasName]);
         }
 
         $tokens->insertAt(

@@ -14,13 +14,14 @@ class DoctrineNamespaceFixer extends RenameFixer
     {
         $tokens = Tokens::fromCode($content);
         $this->renameFullUseStatements($tokens, ['Doctrine', 'Common', 'Persistence', 'ManagerRegistry'], ['Doctrine', 'Persistence', 'ManagerRegistry']);
+        $this->renameFullUseStatements($tokens, ['Symfony', 'Bridge', 'Doctrine', 'RegistryInterface'], ['Doctrine', 'Persistence', 'ManagerRegistry'], 'RegistryInterface');
         return $tokens->generateCode();
     }
 
     /**
      * @inheritDoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
         return "Update Doctrine namespacing";
     }
