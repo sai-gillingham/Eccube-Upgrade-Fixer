@@ -108,6 +108,19 @@ abstract class AbstractFixer extends BaseAbstractFixer
         );
     }
 
+    protected function removeUseStatement(Tokens $tokens, array $fqcn)
+    {
+        $matchedTokens = $this->getUseStatements($tokens, $fqcn);
+        if (null === $matchedTokens) {
+            return false;
+        }
+        $matchedTokensIndexes = array_keys($matchedTokens);
+        for ($x = $matchedTokensIndexes[0]; $x < end($matchedTokensIndexes) + 1; $x++) {
+            $tokens[$x]->setContent('');
+        }
+        return true;
+    }
+
     protected function extendsClass(Tokens $tokens, array $fqcn)
     {
         if (!$this->hasUseStatements($tokens, $fqcn)) {
