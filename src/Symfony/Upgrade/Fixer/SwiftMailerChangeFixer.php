@@ -6,7 +6,7 @@ use Symfony\CS\Tokenizer\Token;
 use Symfony\CS\Tokenizer\Tokens;
 use UnexpectedValueException;
 
-class SwiftMailerChange extends AbstractFixer
+class SwiftMailerChangeFixer extends AbstractFixer
 {
 
     /**

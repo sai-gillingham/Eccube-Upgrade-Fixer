@@ -4,7 +4,7 @@ namespace Symfony\Upgrade\Fixer;
 
 use Symfony\CS\Tokenizer\Tokens;
 
-class ExtendedTypesTypeReturnFix extends ReturnTypeFixer
+class ExtendedTypesTypeReturnFixer extends ReturnTypeFixer
 {
 
     /**
