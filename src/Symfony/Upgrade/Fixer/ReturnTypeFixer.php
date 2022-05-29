@@ -26,15 +26,36 @@ abstract class ReturnTypeFixer extends RenameFixer
 
 //        var_dump($matchedTokens);
         $useTokenIndexes = array_keys($matchedTokens);
-        $tokens->insertAt(
-            end($useTokenIndexes) + 1,
-            [
-                new Token([T_WHITESPACE, ' ']),
-                new Token([T_STRING, ':']),
-                new Token([T_WHITESPACE, ' ']),
-                new Token([T_STRING, $returnType]),
-            ],
-        );
+
+        if ($returnType == 'iterable') {
+            var_dump($tokens[end($useTokenIndexes) + 1]);
+            var_dump($tokens[end($useTokenIndexes) + 2]);
+            var_dump($tokens[end($useTokenIndexes) + 3]);
+            var_dump($tokens[end($useTokenIndexes) + 4]);
+        }
+
+        $isExistsAlready = false;
+
+        for($tokenAttempts = 1; $tokenAttempts < 15; $tokenAttempts++) {
+            /** @var $tokens Token[]|Tokens */
+            if ($tokens[end($useTokenIndexes) + $tokenAttempts]->getContent() == ':') {
+                $isExistsAlready = true;
+            } elseif ($tokens[end($useTokenIndexes) + $tokenAttempts]->getContent() == '{') {
+                break;
+            }
+        }
+
+        if ($isExistsAlready === false) {
+            $tokens->insertAt(
+                end($useTokenIndexes) + 1,
+                [
+                    new Token([T_WHITESPACE, ' ']),
+                    new Token([T_STRING, ':']),
+                    new Token([T_WHITESPACE, ' ']),
+                    new Token([T_STRING, $returnType]),
+                ],
+            );
+        }
         $this->upsertReturnType($tokens, $class, $function, $returnType, end($useTokenIndexes));
     }
 }
