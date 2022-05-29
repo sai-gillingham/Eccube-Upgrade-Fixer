@@ -2,6 +2,7 @@
 
 namespace Symfony\Upgrade\Fixer;
 
+use Symfony\CS\Tokenizer\Token;
 use Symfony\CS\Tokenizer\Tokens;
 
 abstract class RenameFixer extends AbstractFixer
@@ -11,7 +12,7 @@ abstract class RenameFixer extends AbstractFixer
         $matchedTokens = $tokens->findSequence([
             [T_NEW],
             [T_STRING, $old],
-       ]);
+        ]);
 
         if (null === $matchedTokens) {
             return;
@@ -20,8 +21,7 @@ abstract class RenameFixer extends AbstractFixer
         $matchedIndexes = array_keys($matchedTokens);
 
         $matchedTokens[$matchedIndexes[count($matchedIndexes) - 1]]
-            ->setContent($new)
-        ;
+            ->setContent($new);
 
         $this->renameNewStatements($tokens, $old, $new);
     }
@@ -34,7 +34,7 @@ abstract class RenameFixer extends AbstractFixer
             [T_STRING, $old],
             '(',
             ')',
-       ]);
+        ]);
 
         if (null === $matchedTokens) {
             return;
@@ -43,8 +43,7 @@ abstract class RenameFixer extends AbstractFixer
         $matchedTokensIndexes = array_keys($matchedTokens);
 
         $matchedTokens[$matchedTokensIndexes[count($matchedTokensIndexes) - 3]]
-            ->setContent($new)
-        ;
+            ->setContent($new);
 
         $this->renameMethodCalls($tokens, $className, $old, $new);
     }
@@ -55,7 +54,7 @@ abstract class RenameFixer extends AbstractFixer
             [T_STRING, $className],
             [T_DOUBLE_COLON],
             [T_STRING, $old],
-       ]);
+        ]);
 
         if (null === $matchedTokens) {
             return;
@@ -64,8 +63,7 @@ abstract class RenameFixer extends AbstractFixer
         $matchedTokensIndexes = array_keys($matchedTokens);
 
         $matchedTokens[$matchedTokensIndexes[count($matchedTokensIndexes) - 1]]
-            ->setContent($new)
-        ;
+            ->setContent($new);
 
         $this->renameConstants($tokens, $className, $old, $new);
     }
@@ -87,5 +85,25 @@ abstract class RenameFixer extends AbstractFixer
             $tokens[end($useTokenIndexes)]->setContent($new);
         }
         $this->renameChainMethods($tokens, $old, $new);
+    }
+
+
+    protected function renameFunctionParameterTypes(Tokens &$tokens, string $old, string $new, int $index = 0)
+    {
+        $classParameterTypeTokens = $tokens->findSequence([
+            '(',
+            [T_STRING, $old]
+        ], $index);
+
+        if ($classParameterTypeTokens == null) {
+            return;
+        }
+
+        $useTokenIndexes = array_keys($classParameterTypeTokens);
+
+        /** @var $tokens Token[]|Tokens */
+        $tokens[end($useTokenIndexes)]->setContent($new);
+
+        $this->renameFunctionParameterTypes($tokens, $old, $new, end($useTokenIndexes));
     }
 }
