@@ -10,7 +10,7 @@ class EventNamespaceUpdate extends RenameFixer
     /**
      * @inheritDoc
      */
-    public function fix(\SplFileInfo $file, $content)
+    public function fix(\SplFileInfo $file, $content): string
     {
         $tokens = Tokens::fromCode($content);
 
@@ -36,8 +36,8 @@ class EventNamespaceUpdate extends RenameFixer
     /**
      * @inheritDoc
      */
-    public function getDescription()
+    public function getDescription(): string
     {
-        // TODO: Implement getDescription() method.
+        return "Response event namespace update.";
     }
 }
