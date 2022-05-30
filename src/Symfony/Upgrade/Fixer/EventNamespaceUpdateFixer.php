@@ -4,7 +4,7 @@ namespace Symfony\Upgrade\Fixer;
 
 use Symfony\CS\Tokenizer\Tokens;
 
-class EventNamespaceUpdate extends RenameFixer
+class EventNamespaceUpdateFixer extends RenameFixer
 {
 
     /**

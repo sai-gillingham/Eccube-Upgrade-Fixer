@@ -4,7 +4,7 @@ namespace Symfony\Upgrade\Fixer;
 
 use Symfony\CS\Tokenizer\Tokens;
 
-class PDOFunctionUpdates extends RenameFixer
+class PDOFunctionUpdateFixer extends RenameFixer
 {
 
     /**

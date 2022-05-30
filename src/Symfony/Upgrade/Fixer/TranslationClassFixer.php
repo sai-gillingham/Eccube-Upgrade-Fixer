@@ -4,7 +4,7 @@ namespace Symfony\Upgrade\Fixer;
 
 use Symfony\CS\Tokenizer\Tokens;
 
-class TranslationClassFix extends RenameFixer
+class TranslationClassFixer extends RenameFixer
 {
 
     /**
