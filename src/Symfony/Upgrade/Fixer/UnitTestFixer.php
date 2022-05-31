@@ -19,6 +19,9 @@ class UnitTestFixer extends ReturnTypeFixer
         $this->upsertReturnType($tokens, '....', 'setUp', 'void');
         $this->upsertReturnType($tokens, '...', 'tearDown', 'void');
 
+        $this->renameFunctionAccessType($tokens, 'setUp', T_PUBLIC, T_PROTECTED);
+        $this->renameFunctionAccessType($tokens, 'tearDown', T_PUBLIC, T_PROTECTED);
+
         // 以下の非推奨のユニットテストメソッドを、更新されたメソッドに変更する。
         // Change deprecated unit test methods below to an updated method
         $this->renameChainMethods($tokens, 'assertContains', 'assertStringContainsString');

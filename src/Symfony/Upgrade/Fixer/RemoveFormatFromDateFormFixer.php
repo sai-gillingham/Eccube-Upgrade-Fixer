@@ -74,8 +74,6 @@ class RemoveFormatFromDateFormFixer extends \Symfony\CS\AbstractFixer
         // Check if DateType Class Only
         $foundEndPoint = false;
         for($i = $startParameterId; $i < $endParameterId; $i++ ) {
-            var_dump($tokens[$i]->getContent());
-
             if ($tokens[$i]->getContent() == "'format'") {
                 $y = 0;
                 while($foundEndPoint === false) {
