@@ -13,6 +13,7 @@ class PHPDOCFixer extends AbstractFixer
         // TOKEN層ではコメントが使えないため、生の文字列としてコードを扱うことになる。
         // Due to comments not being available on the TOKEN layer, I will have to handle the code as a raw string.
         $this->_phpDocClassReferenceFix($content, 'var', '\\SwiftMailer', 'MailerInterface');
+        $this->_phpDocClassReferenceFix($content, 'var', '\\Swift_Message', 'RawMessage|null');
         $this->_phpDocClassReferenceFix($content, 'param', '\\SwiftMailer', 'MailerInterface');
         $this->_phpDocClassReferenceFix($content, 'param', '\\Doctrine\Common\Persistence\ManagerRegistry', 'ManagerRegistry');
         return $content;
