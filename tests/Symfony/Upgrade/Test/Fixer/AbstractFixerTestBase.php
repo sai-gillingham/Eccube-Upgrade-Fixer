@@ -13,7 +13,7 @@ abstract class AbstractFixerTestBase extends BaseAbstractFixerTestBase
         return new $name();
     }
 
-    protected function prepareTestCase($expectedFilename, $inputFilename = null)
+    protected function prepareTestCase($expectedFilename, $inputFilename = null): array
     {
         $dir = __DIR__.'/../../Fixtures/Fixer/'.str_replace(
             '-fixer-test',
