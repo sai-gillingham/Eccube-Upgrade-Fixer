@@ -9,6 +9,7 @@ use UnexpectedValueException;
 class SwiftMailerChangeFixer extends AbstractFixer
 {
     public bool $didUpdateMailer = false;
+    public int $avoidAttemptTryCount = 6;
 
     /**
      * @inheritDoc
@@ -31,14 +32,14 @@ class SwiftMailerChangeFixer extends AbstractFixer
             $this->_replaceArrayWithAddressObject($tokens);
             // Swiftのメーラー関数をSymfonyのメーラー関数に置き換える
             // Replace Swift mailer functions with Symfony mailer functions
-            $this->_replaceChainFunction($tokens, 'setSubject', 'subject');
-            $this->_replaceChainFunction($tokens, 'setFrom', 'from');
-            $this->_replaceChainFunction($tokens, 'setTo', 'to');
-            $this->_replaceChainFunction($tokens, 'setBcc', 'bcc');
-            $this->_replaceChainFunction($tokens, 'setReplyTo', 'replyTo');
-            $this->_replaceChainFunction($tokens, 'setReturnPath', 'returnPath');
-            $this->_replaceChainFunction($tokens, 'setBody', 'text');
-            $this->_replaceChainFunction($tokens, 'addPart', 'html');
+            $this->_replaceChainFunction($tokens, 'setSubject', 'subject', 0, ['$sendHistory'] );
+            $this->_replaceChainFunction($tokens, 'setFrom', 'from', 0, ['$sendHistory']);
+            $this->_replaceChainFunction($tokens, 'setTo', 'to', 0, ['$sendHistory']);
+            $this->_replaceChainFunction($tokens, 'setBcc', 'bcc', 0, ['$sendHistory']);
+            $this->_replaceChainFunction($tokens, 'setReplyTo', 'replyTo', 0, ['$sendHistory']);
+            $this->_replaceChainFunction($tokens, 'setReturnPath', 'returnPath', 0, ['$sendHistory']);
+            $this->_replaceChainFunction($tokens, 'setBody', 'text', 0, ['$sendHistory']);
+            $this->_replaceChainFunction($tokens, 'addPart', 'html', 0, ['$sendHistory']);
             // メール
             $this->_deleteChainFunction($tokens, 'setContentType');
 
@@ -72,7 +73,7 @@ class SwiftMailerChangeFixer extends AbstractFixer
     }
 
 
-    private function _replaceChainFunction(Tokens &$tokens, string $from, string $to, $index = 0)
+    private function _replaceChainFunction(Tokens &$tokens, string $from, string $to, $index = 0, array $avoidVariableNames = [])
     {
         // Swift_Message クラスを変更する
         // Change Swift_Message class
@@ -88,8 +89,26 @@ class SwiftMailerChangeFixer extends AbstractFixer
         }
 
         $useTokenIndexes = array_keys($subjectFunctionUpdate);
-        $tokens[end($useTokenIndexes)]->setContent($to);
-        $this->_replaceChainFunction($tokens, $from, $to, end($useTokenIndexes));
+        $stopReplace = false;
+
+        // @todo: これを改良して、避けるべき正しいインスタンスタイプを見つけるようにしたいのですが、 今のところ、これは $avoidVariableNames の内容を持つトークンをすべて避けるようにします。
+        // @todo: Want to improve this by finding the correct instancetype to avoid, but for now, this will avoid any with token with contents of $avoidVariableNames
+        foreach($avoidVariableNames as $avoidVariableName) {
+            for ($i = 0; $i < $this->avoidAttemptTryCount;  $i++) {
+                /** @var Tokens|Token[] $tokens */
+                if ($from == 'setBody') {
+                    var_dump($tokens[end($useTokenIndexes) - $i]->getContent());
+                }
+                if ($tokens[end($useTokenIndexes) - $i]->getContent() == $avoidVariableName) {
+                    $stopReplace = true;
+                }
+            }
+        }
+        if ($stopReplace === false) {
+            $tokens[end($useTokenIndexes)]->setContent($to);
+        }
+        
+        $this->_replaceChainFunction($tokens, $from, $to, end($useTokenIndexes), $avoidVariableNames);
     }
 
     /**
