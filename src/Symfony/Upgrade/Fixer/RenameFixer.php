@@ -37,7 +37,6 @@ abstract class RenameFixer extends AbstractFixer
             return;
         }
 
-        var_dump("MATCHED");
 
         $matchedIndexes = array_keys($matchedTokens);
 

@@ -37,7 +37,6 @@ class EmailValidatorFixer extends RenameFixer
         $useTokenIndexes = array_keys($strictIfTokens);
         /** @var $tokens Tokens|Token[] */
         $tokens[end($useTokenIndexes)]->setContent('');
-        var_dump("LOOP");
         $tokens->insertAt(
             end($useTokenIndexes),
             [

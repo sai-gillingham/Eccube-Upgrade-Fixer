@@ -84,8 +84,6 @@ class UnitTestFixer extends ReturnTypeFixer
             $tokens[$y]->setContent('');
         }
 
-        var_dump($mailCollectorName);
-
         // Second Line
         $secondLineTokens = $tokens->findSequence([
             '=',
@@ -109,8 +107,6 @@ class UnitTestFixer extends ReturnTypeFixer
 
         // Get Previous token which *should* be the variable name (or the plugin itself would crash)
         $secondLineVariableName = $tokens[$matchedIndexes[0] - 2]->getContent();
-
-        var_dump($secondLineVariableName);
 
         for ($y = $matchedIndexes[0] - 2; $y < end($matchedIndexes) + 1; $y++) {
             $tokens[$y]->setContent('');
@@ -190,18 +186,15 @@ class UnitTestFixer extends ReturnTypeFixer
         }
 
         $matchedIndexes = array_keys($difficultFind);
-        var_dump("FOUND!?");
 //        var_dump($tokens[end($matchedIndexes)]->getContent());
 //        var_dump($tokens[end($matchedIndexes) + 1]->getContent());
 //        var_dump($tokens[end($matchedIndexes) + 1]->getPrototype());
 
         // FindSequence functionality had trouble finding strings so find strings using another way
         if ($tokens[end($matchedIndexes) + 1]->getContent() !== "'security.token_storage'") {
-            var_dump("NO SECURITY");
             $this->_UTLoginProcessUpdate($tokens, end($matchedIndexes));
             return;
         }
-        var_dump("PASSED THROUGH");
 
         // Get User and firewall from UsernamePasswordToken
         $i = 0;
@@ -225,7 +218,6 @@ class UnitTestFixer extends ReturnTypeFixer
                 $tempTokenArray[$parameterIndex][] = clone $tokens[end($matchedIndexes) + $i];
             }
         }
-        var_dump($tempTokenArray);
 
         // Delete the old code
         $x = 0;

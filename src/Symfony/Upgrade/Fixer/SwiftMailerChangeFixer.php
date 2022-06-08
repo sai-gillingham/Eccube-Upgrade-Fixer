@@ -114,7 +114,6 @@ class SwiftMailerChangeFixer extends AbstractFixer
         }
 
         $deleteFunctionToken = array_keys($deleteChainFunction);
-        var_dump($deleteFunctionToken);
 
         $methodEndToken = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, end($deleteFunctionToken));
 
@@ -195,7 +194,6 @@ class SwiftMailerChangeFixer extends AbstractFixer
         try {
             $endToken = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, end($arrayStartIndex));
         } catch (UnexpectedValueException $exception) {
-            echo "NO END";
         }
 
         if (isset($endToken)) {

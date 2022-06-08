@@ -28,10 +28,10 @@ abstract class ReturnTypeFixer extends RenameFixer
         $useTokenIndexes = array_keys($matchedTokens);
 
         if ($returnType == 'iterable') {
-            var_dump($tokens[end($useTokenIndexes) + 1]);
-            var_dump($tokens[end($useTokenIndexes) + 2]);
-            var_dump($tokens[end($useTokenIndexes) + 3]);
-            var_dump($tokens[end($useTokenIndexes) + 4]);
+//            var_dump($tokens[end($useTokenIndexes) + 1]);
+//            var_dump($tokens[end($useTokenIndexes) + 2]);
+//            var_dump($tokens[end($useTokenIndexes) + 3]);
+//            var_dump($tokens[end($useTokenIndexes) + 4]);
         }
 
         $isExistsAlready = false;
