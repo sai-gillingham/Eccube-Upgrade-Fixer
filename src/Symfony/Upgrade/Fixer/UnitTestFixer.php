@@ -238,10 +238,10 @@ class UnitTestFixer extends ReturnTypeFixer
                 new Token([T_OBJECT_OPERATOR, '->']),
                 new Token([T_STRING, 'loginUser']),
                 ...$tempTokenArray[0],
-                new Token([T_STRING, ',']),
+                new Token(','),
                 ...$tempTokenArray[2],
-                new Token([T_STRING, ')']),
-                new Token([T_STRING, ';'])
+                new Token(')'),
+                new Token(';')
             ]
         );
 

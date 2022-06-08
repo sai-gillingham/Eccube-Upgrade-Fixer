@@ -50,7 +50,7 @@ abstract class ReturnTypeFixer extends RenameFixer
                 end($useTokenIndexes) + 1,
                 [
                     new Token([T_WHITESPACE, ' ']),
-                    new Token([T_STRING, ':']),
+                    new Token(':'),
                     new Token([T_WHITESPACE, ' ']),
                     new Token([T_STRING, $returnType]),
                 ],

@@ -9,23 +9,23 @@ abstract class TestClass
     }
 
     public function testChain☓☓☓☓☓☓☓() {
-        $this->assertArraySubset([], []);
+        $this->assertSame([], []);
     }
 
     public function testChainYYYYYYYYYYYYYYY() {
-        $this->assertEquals("ab", "ab");
+        $this->assertSame("ab", "ab");
     }
 
     public function testConst○○○○○○○○() {
-        self::assertContains('string', 'string');
-        self::assertRegexp('regex', 'string');
+        self::assertStringContainsString('string', 'string');
+        self::assertMatchesRegularExpression('regex', 'string');
     }
 
     public function testConst☓☓☓☓☓☓☓() {
-        self::assertArraySubset([], []);
+        self::assertSame([], []);
     }
 
     public function testConstYYYYYYYYYYYYYYY() {
-        self::assertEquals("ab", "ab");
+        self::assertSame("ab", "ab");
     }
 }
