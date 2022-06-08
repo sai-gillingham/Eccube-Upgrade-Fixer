@@ -91,14 +91,11 @@ class SwiftMailerChangeFixer extends AbstractFixer
         $useTokenIndexes = array_keys($subjectFunctionUpdate);
         $stopReplace = false;
 
-        // @todo: これを改良して、避けるべき正しいインスタンスタイプを見つけるようにしたいのですが、 今のところ、これは $avoidVariableNames の内容を持つトークンをすべて避けるようにします。
+        // @todo: これを改良して、避けるべき正しいインスタンスタイプを見つけるようにしたいのですが、 今のところ、これは $avoidVariableNames の内容のトークンをすべて避けるようにします。
         // @todo: Want to improve this by finding the correct instancetype to avoid, but for now, this will avoid any with token with contents of $avoidVariableNames
         foreach($avoidVariableNames as $avoidVariableName) {
             for ($i = 0; $i < $this->avoidAttemptTryCount;  $i++) {
                 /** @var Tokens|Token[] $tokens */
-                if ($from == 'setBody') {
-                    var_dump($tokens[end($useTokenIndexes) - $i]->getContent());
-                }
                 if ($tokens[end($useTokenIndexes) - $i]->getContent() == $avoidVariableName) {
                     $stopReplace = true;
                 }
