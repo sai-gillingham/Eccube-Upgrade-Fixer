@@ -103,7 +103,6 @@ class Fixer
             if ($this->errorsManager) {
                 $this->errorsManager->report(ErrorsManager::ERROR_TYPE_EXCEPTION, $this->getFileRelativePathname($file), $e->__toString());
             }
-
             return;
         }
 
