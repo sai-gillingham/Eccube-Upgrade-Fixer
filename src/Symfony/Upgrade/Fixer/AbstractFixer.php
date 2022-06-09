@@ -67,9 +67,9 @@ abstract class AbstractFixer extends BaseAbstractFixer
             $newNSP[] = new Token([T_STRING, $fqns]);
         }
         if (!empty($aliasName)) {
-            $newNSP[] = new Token([T_STRING,  ' ']);
+            $newNSP[] = new Token([T_WHITESPACE,  ' ']);
             $newNSP[] = new Token([T_AS, 'as']);
-            $newNSP[] = new Token([T_STRING,  ' ']);
+            $newNSP[] = new Token([T_WHITESPACE,  ' ']);
             $newNSP[] = new Token([T_STRING, $aliasName]);
         }
 
