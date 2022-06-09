@@ -73,7 +73,7 @@ class EmailValidatorFixer extends RenameFixer
 
         $tokens->insertAt(end($useTokenIndexes),
             [
-                new Token([T_STRING, '(']),
+                new Token('('),
                 new Token([T_STRING, 'Email']),
                 new Token([T_DOUBLE_COLON, '::']),
                 new Token([T_STRING, 'VALIDATION_MODE_STRICT'])
