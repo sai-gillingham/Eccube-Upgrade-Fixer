@@ -23,13 +23,13 @@ class EventDispatcherFixer extends AbstractFixer
     private function _swapDispatchParameters(Tokens &$tokens, int $startingIndex = 0)
     {
         $foundTokens = $tokens->findSequence([
-                [T_VARIABLE, '$this'],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'eventDispatcher'],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'dispatch'],
-                '('
-            ],
+            [T_VARIABLE, '$this'],
+            [T_OBJECT_OPERATOR],
+            [T_STRING, 'eventDispatcher'],
+            [T_OBJECT_OPERATOR],
+            [T_STRING, 'dispatch'],
+            '('
+        ],
             $startingIndex
         );
 
@@ -53,27 +53,39 @@ class EventDispatcherFixer extends AbstractFixer
         $oneParameters = [];
         $twoParameters = [];
         $isFirstParameter = true;
+        $isNotDuplicateOf = false;
 
-        for($y = end($useTokenIndexes) + 1; $y < $blockEndToken; $y++) {
+        for ($y = end($useTokenIndexes) + 1; $y < $blockEndToken; $y++) {
             /** @var $token Token */
             $token = $tokens[$y];
 
             if ($token->getContent() == ',') {
                 $isFirstParameter = false;
-                $token->setContent('');
+                if ($isNotDuplicateOf === true) {
+                    $token->setContent('');
+                } else {
+                    break;
+                }
                 continue;
             }
             if ($isFirstParameter) {
+                if ($token->getContent() === 'EccubeEvents') {
+                    $isNotDuplicateOf = true;
+                }
                 $oneParameters[] = clone $token;
             } else {
                 $twoParameters[] = clone $token;
             }
-            $token->setContent('');
+            if ($isNotDuplicateOf === true) {
+                $token->setContent('');
+            }
         }
 
-        $tokens->insertAt(end($useTokenIndexes) + 1,
-            [...$twoParameters, ...[new Token([T_STRING, ','])], ...$oneParameters, ...[new Token([T_STRING, ')'])]]
-        );
+        if ($isNotDuplicateOf === true) {
+            $tokens->insertAt(end($useTokenIndexes) + 1,
+                [...$twoParameters, ...[new Token(',')], ...$oneParameters]
+            );
+        }
 
         $this->_swapDispatchParameters($tokens, $blockEndToken);
     }
