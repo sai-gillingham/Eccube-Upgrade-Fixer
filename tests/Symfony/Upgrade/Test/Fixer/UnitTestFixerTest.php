@@ -46,7 +46,12 @@ class UnitTestFixerTest extends AbstractFixerTestBase
             $this->prepareTestCase('getMailCollectorMigration/body_to_html_body/case2-output.php', 'getMailCollectorMigration/body_to_html_body/case2-input.php'),
             
             // 7: symfony4のテストログイン処理からsymfony5のログイン処理に
-            $this->prepareTestCase('login_process/login_user_update/case1-output.php', 'login_process/login_user_update/case1-input.php')
+            $this->prepareTestCase('login_process/login_user_update/case1-output.php', 'login_process/login_user_update/case1-input.php'),
+            // 8: (assertArraySubset()、 assertEquals() )はassertSame()に
+            $this->prepareTestCase('assertFix/assert_same_fix/case1-output.php', 'assertFix/assert_same_fix/case1-input.php'),
+            $this->prepareTestCase('assertFix/assert_same_fix/case2-output.php', 'assertFix/assert_same_fix/case2-input.php')
+            
+            
         ];
     }
 }
