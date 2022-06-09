@@ -50,8 +50,6 @@ class UnitTestFixerTest extends AbstractFixerTestBase
             // 8: (assertArraySubset()、 assertEquals() )はassertSame()に
             $this->prepareTestCase('assertFix/assert_same_fix/case1-output.php', 'assertFix/assert_same_fix/case1-input.php'),
             $this->prepareTestCase('assertFix/assert_same_fix/case2-output.php', 'assertFix/assert_same_fix/case2-input.php')
-            
-            
         ];
     }
 }
