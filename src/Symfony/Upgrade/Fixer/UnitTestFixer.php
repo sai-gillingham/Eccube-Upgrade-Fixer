@@ -84,6 +84,16 @@ class UnitTestFixer extends ReturnTypeFixer
             $tokens[$y]->setContent('');
         }
 
+        $xx = 0;
+        while (true) {
+            $xx++;
+            if ($tokens[$matchedIndexes[0] - 2 - $xx]->isWhitespace() === false) {
+                break;
+            }
+            $tokens[$matchedIndexes[0] - 2 - $xx]->setContent('');
+        }
+
+
         // Second Line
         $secondLineTokens = $tokens->findSequence([
             '=',
@@ -112,8 +122,16 @@ class UnitTestFixer extends ReturnTypeFixer
             $tokens[$y]->setContent('');
         }
 
-
-        // @todo: Change $Messages[0] to $this->getMailerMessage();
+        $xx = 0;
+        while (true) {
+            $xx++;
+            if ($tokens[$matchedIndexes[0] - 2 - $xx]->isWhitespace() === false) {
+                break;
+            }
+            $tokens[$matchedIndexes[0] - 2 - $xx]->setContent('');
+        }
+        
+        // Change $Messages[0] to $this->getMailerMessage();
         $thirdLineReplaceLine = $tokens->findSequence(
             [
                 [T_VARIABLE, $secondLineVariableName]
@@ -142,9 +160,10 @@ class UnitTestFixer extends ReturnTypeFixer
             [
                 new Token([T_VARIABLE, '$this']),
                 new Token([T_OBJECT_OPERATOR, '->']),
-                new Token([T_STRING, 'getMailerMessage()'])
+                new Token([T_STRING, 'getMailerMessage']),
+                new Token('('),
+                new Token(')')
             ]);
-
         $this->addUseStatement($tokens, ['Symfony', 'Component', 'Mime', 'RawMessage']);
 
         // Since previous checks have been made to confirm this file is a test file and email check are present we can

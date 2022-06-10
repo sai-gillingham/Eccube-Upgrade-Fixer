@@ -36,8 +36,7 @@ class UnitTestFixerTest extends AbstractFixerTestBase
             $this->prepareTestCase('assertFix/assert_reg_exp_fix/case1-output.php', 'assertFix/assert_reg_exp_fix/case1-input.php'),
             
             // 5: $mailCollector = $this->getMailCollector(false);から$Message = $this->getMailerMessage();に
-            // @todo: Not sure about the empty spaces after transform
-            // $this->prepareTestCase('getMailCollectorMigration/change_mail_collector_instance/case1-output.php', 'getMailCollectorMigration/change_mail_collector_instance/case1-input.php')
+            $this->prepareTestCase('getMailCollectorMigration/change_mail_collector_instance/case1-output.php', 'getMailCollectorMigration/change_mail_collector_instance/case1-input.php'),
             
             // 6: getMailerMessageのgetBody()からgetHtmlBody()に
             // @todo: Not sure about the empty spaces after transform
