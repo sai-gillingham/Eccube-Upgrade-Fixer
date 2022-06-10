@@ -40,7 +40,7 @@ class UnitTestFixerTest extends AbstractFixerTestBase
             
             // 6: getMailerMessageのgetBody()からgetHtmlBody()に
             // @todo: Not sure about the empty spaces after transform
-            // $this->prepareTestCase('getMailCollectorMigration/body_to_html_body/case1-output.php', 'getMailCollectorMigration/body_to_html_body/case1-input.php'),
+            $this->prepareTestCase('getMailCollectorMigration/body_to_html_body/case1-output.php', 'getMailCollectorMigration/body_to_html_body/case1-input.php'),
             $this->prepareTestCase('getMailCollectorMigration/body_to_html_body/case2-output.php', 'getMailCollectorMigration/body_to_html_body/case2-input.php'),
             
             // 7: symfony4のテストログイン処理からsymfony5のログイン処理に
