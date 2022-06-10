@@ -56,22 +56,21 @@ docker run --rm -v /path/to/plugin:/app eccube/upgrade-fixer fix /app
 
 ## 利用可能なFixer一覧
 
-| Name  | Description |
-| ----  | ----------- |
-| app_request | Fix $app["request"] -> $app["request"]->getCurrentRequest(). |
-| eccube_form_type_names | EC-CUBE FormType support. |
-| form_choice_type_array | Flip choices in ChoiceType. |
-| form_configure_options | The method AbstractType::setDefaultOptions(OptionsResolverInterface $resolver) have been renamed to AbstractType::configureOptions(OptionsResolver $resolver). |
-| form_events | The events PRE_BIND, BIND and POST_BIND were renamed to PRE_SUBMIT, SUBMIT and POST_SUBMIT. |
-| form_getname_to_getblockprefix | The method FormTypeInterface::getName() was deprecated, you should now implement FormTypeInterface::getBlockPrefix() instead. |
-| form_option_names | Options precision and virtual was renamed to scale and inherit_data. |
-| form_parent_type | Returning type instances from FormTypeInterface::getParent() is deprecated, return the fully-qualified class name of the parent type class instead. |
-| form_type_names | Instead of referencing types by name, you should reference them by their fully-qualified class name (FQCN) instead. |
-| get_request | The getRequest method of the base controller class was removed, request object is injected in the action method instead. |
-| inherit_data_aware_iterator | The class VirtualFormAwareIterator was renamed to InheritDataAwareIterator. |
-| progress_bar | ProgressHelper has been removed in favor of ProgressBar. |
-| property_access | Renamed PropertyAccess::getPropertyAccessor to PropertyAccess::createPropertyAccessor. |
-| service_provider | Fix ServiceProvider. |
+| Name                             | Description                                                                                 |
+|----------------------------------|---------------------------------------------------------------------------------------------|
+| doctrine_namespace               | Update Doctrine namespacing                                                                 |
+| email_validator                  | Fix up strict validation changes to email. From an instance reference to CONSTANT reference |
+| email_validator_parameter_update | Email validation parameter updated                                                          |
+| event_dispatcher                 | Switch EC-CUBE Event dispatcher parameters                                                  |
+| event_namespace_update           | Response event namespace update.                                                            |
+| extended_types_type_return       | Add iterable type return to getExtendedTypes() class                                        |
+| pDOFunction_update               | fetchOne to fetchRow Update                                                                 |
+| pHP8_parameter                   | Fixes for php 8                                                                             |
+| pHPDOC                           | Fixes to incorrect php doc class references                                                 |
+| remove_format_from_date_form     | Remove date parameter from DateType::class                                                  |
+| swift_mailer_change              | Update from \Swift_Mailer to Symfony 5 MailerInterface                                      |
+| translation_class                | Translation class fixes                                                                     |
+| unit_test                        | UnitTest setUp function requires void return type                                           |
 
 
 ## Contribute
