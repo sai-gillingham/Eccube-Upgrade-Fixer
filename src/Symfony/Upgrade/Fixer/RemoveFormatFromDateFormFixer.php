@@ -45,11 +45,11 @@ class RemoveFormatFromDateFormFixer extends \Symfony\CS\AbstractFixer
         try {
             $endParameterId = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, $startParameterId);
         } catch (\UnexpectedValueException $e) {
+            $this->_removeFormatFromDateTypeFormInput($tokens, $startParameterId);
             return;
         }
 
         if ($this->_hasDateType($tokens, $startParameterId, $endParameterId) === true) {
-
             $this->_findAndReplaceFormatParameter($tokens, $startParameterId, $endParameterId);
         }
         $this->_removeFormatFromDateTypeFormInput($tokens, $endParameterId);
@@ -67,10 +67,12 @@ class RemoveFormatFromDateFormFixer extends \Symfony\CS\AbstractFixer
 
     /**
      * @param Tokens|Token[] $tokens
-     * @param int $index
+     * @param int $startParameterId
+     * @param int $endParameterId
      * @return void
      */
-    private function _findAndReplaceFormatParameter(Tokens $tokens, $startParameterId, $endParameterId) {
+    private function _findAndReplaceFormatParameter(Tokens $tokens, int $startParameterId, int $endParameterId) {
+        // DateTypeクラスのみかどうかをチェックする
         // Check if DateType Class Only
         $foundEndPoint = false;
         for($i = $startParameterId; $i < $endParameterId; $i++ ) {
@@ -83,7 +85,16 @@ class RemoveFormatFromDateFormFixer extends \Symfony\CS\AbstractFixer
                     $tokens[$i + $y]->setContent('');
                     $y++;
                 }
-
+                $x = 0;
+                // 既存の空白を削除する
+                // Remove Any Existing whitespace
+                while(true) {
+                    $x++;
+                    if($tokens[$i - $x]->isWhitespace() === false) {
+                        break;
+                    } 
+                    $tokens[$i - $x]->setContent('');
+                }
             }
         }
     }
