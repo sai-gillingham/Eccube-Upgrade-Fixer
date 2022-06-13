@@ -116,6 +116,32 @@ abstract class RenameFixer extends AbstractFixer
         $this->renameChainMethods($tokens, $old, $new, end($useTokenIndexes));
     }
 
+    /**
+     * @param Tokens|Token[] $tokens
+     * @param string $keyName
+     * @param string $associatedKey // TODO: Use Enclosed match type search to prevent mismatch code
+     * @param int $oldValueTokenType
+     * @param $oldValue
+     * @param $newValue
+     * @param int $index
+     * @return void
+     */
+    protected function renameArrayValue(Tokens $tokens, string $keyName, string $associatedKey, int $oldValueTokenType, $oldValue, $newValue, int $index = 0) {
+        $arrayValueKeyTokens = $tokens->findSequence([
+            [T_CONSTANT_ENCAPSED_STRING, $keyName],
+            [T_DOUBLE_ARROW, '=>'],
+            [T_STRING, $oldValue]
+        ], $index);
+
+        if ($arrayValueKeyTokens == null) {
+            return;
+        }
+
+        $arrayValueKeyTokenKeys = array_keys($arrayValueKeyTokens);
+        $tokens[end($arrayValueKeyTokenKeys)]->setContent($newValue);
+        $this->renameArrayValue($tokens, $keyName, $associatedKey, $oldValueTokenType, $oldValue, $newValue, end($arrayValueKeyTokenKeys));
+    }
+
 
     protected function renameFunctionParameterTypes(Tokens &$tokens, string $old, string $new, int $index = 0)
     {

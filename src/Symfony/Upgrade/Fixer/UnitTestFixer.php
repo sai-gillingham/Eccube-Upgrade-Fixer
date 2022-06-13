@@ -42,7 +42,14 @@ class UnitTestFixer extends ReturnTypeFixer
         $this->_getMailCollectorToGetMailerMessage($tokens);
         // Login process UT update
         $this->_UTLoginProcessUpdate($tokens);
-
+        
+//        var_dump(T_STRING);
+        $this->renameArrayValue($tokens, '\'tags\'', '', T_STRING,"null", "[]");
+        $this->renameArrayValue($tokens, '\'images\'', '', T_STRING, "null", "[]");
+        $this->renameArrayValue($tokens, '\'add_images\'', '', T_STRING , "null", "[]");
+        $this->renameArrayValue($tokens, '\'delete_images\'', '', T_STRING, "null", "[]");
+        $this->renameArrayValue($tokens, '\'Category\'', '', T_STRING, "null", "[]");
+        
         return $tokens->generateCode();
     }
 
@@ -186,9 +193,6 @@ class UnitTestFixer extends ReturnTypeFixer
         }
 
         $matchedIndexes = array_keys($difficultFind);
-//        var_dump($tokens[end($matchedIndexes)]->getContent());
-//        var_dump($tokens[end($matchedIndexes) + 1]->getContent());
-//        var_dump($tokens[end($matchedIndexes) + 1]->getPrototype());
 
         // FindSequence functionality had trouble finding strings so find strings using another way
         if ($tokens[end($matchedIndexes) + 1]->getContent() !== "'security.token_storage'") {
