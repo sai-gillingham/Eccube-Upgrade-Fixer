@@ -43,7 +43,6 @@ class UnitTestFixer extends ReturnTypeFixer
         // Login process UT update
         $this->_UTLoginProcessUpdate($tokens);
         
-//        var_dump(T_STRING);
         $this->renameArrayValue($tokens, '\'tags\'', '', T_STRING,"null", "[]");
         $this->renameArrayValue($tokens, '\'images\'', '', T_STRING, "null", "[]");
         $this->renameArrayValue($tokens, '\'add_images\'', '', T_STRING , "null", "[]");
@@ -72,13 +71,10 @@ class UnitTestFixer extends ReturnTypeFixer
         );
 
         if ($mailCollectorTokens == null) {
-//            var_dump("NOPE");
             return;
         }
 
         $matchedIndexes = array_keys($mailCollectorTokens);
-//        var_dump("YEP");
-//        var_dump($matchedIndexes);
 
         // Get Previous token which *should* be the variable name (or the plugin itself would crash)
         $mailCollectorName = $tokens[$matchedIndexes[0] - 2]->getContent();
@@ -103,14 +99,11 @@ class UnitTestFixer extends ReturnTypeFixer
         ], $index);
 
         if ($secondLineTokens == null) {
-//            var_dump("STOP1");
             $this->_getMailCollectorToGetMailerMessage($tokens, $endToken);
             return;
         }
 
         $matchedIndexes = array_keys($secondLineTokens);
-//        var_dump("YEP2");
-//        var_dump($matchedIndexes);
 
         // Get Previous token which *should* be the variable name (or the plugin itself would crash)
         $secondLineVariableName = $tokens[$matchedIndexes[0] - 2]->getContent();
@@ -134,8 +127,6 @@ class UnitTestFixer extends ReturnTypeFixer
         }
 
         $matchedIndexes = array_keys($thirdLineReplaceLine);
-//        var_dump("YEP3");
-//        var_dump($matchedIndexes);
 
         $i = 0;
         while (true) {
