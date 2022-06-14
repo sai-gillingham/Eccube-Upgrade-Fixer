@@ -20,7 +20,6 @@ class PHPDOCFixer extends AbstractFixer
     }
 
     private function _phpDocClassReferenceFix(string &$fileContent, string $phpDocType, string $classReferenceName, string $replaceReferenceName, ?string $variableIdentifier = null) {
-//        var_dump(sprintf("@%s %s", $phpDocType, $classReferenceName));
         if($variableIdentifier == null) {
             $fileContent = str_replace(sprintf("@%s %s", $phpDocType, $classReferenceName), sprintf("@%s %s", $phpDocType, $replaceReferenceName), $fileContent);
         }

@@ -30,6 +30,7 @@ class SwiftMailerChangeFixer extends AbstractFixer
             // 配列のfrom型をAddressクラスのインスタンスに置き換える
             // Replace "from" array type with Address class instance
             $this->_replaceArrayWithAddressObject($tokens);
+            $this->_replaceToArray($tokens);
             // Swiftのメーラー関数をSymfonyのメーラー関数に置き換える
             // Replace Swift mailer functions with Symfony mailer functions
             $this->_replaceChainFunction($tokens, 'setSubject', 'subject', 0, ['$sendHistory'] );
@@ -138,6 +139,31 @@ class SwiftMailerChangeFixer extends AbstractFixer
             $tokens[$i]->setContent('');
         }
         $this->_deleteChainFunction($tokens, $from, $methodEndToken);
+    }
+
+    /**
+     * @param Tokens|Token[] $tokens
+     * @param int $index
+     * @return void
+     */
+    private function _replaceToArray(Tokens &$tokens, int $index = 0) {
+        $arrayStart = $tokens->findSequence(
+            [
+                [T_OBJECT_OPERATOR],
+                [T_STRING, 'setTo'],
+                '(',
+                '['
+            ],
+            $index
+        );
+
+        if ($arrayStart == null) {
+            return;
+        }
+        $arrayStartIndex = array_keys($arrayStart);
+        $endToken = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_SQUARE_BRACE, end($arrayStartIndex));
+        $tokens[end($arrayStartIndex)]->setContent('');
+        $tokens[$endToken]->setContent('');
     }
 
     private function _replaceArrayWithAddressObject(Tokens &$tokens, int $index = 0)
