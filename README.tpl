@@ -1,6 +1,6 @@
 # EC-CUBE Upgrade Fixer [![Build Status](https://travis-ci.org/EC-CUBE/Eccube-Upgrade-Fixer.svg)](https://travis-ci.org/EC-CUBE/Eccube-Upgrade-Fixer)
 
-EC-CUBE3.0系のプラグインプロジェクトを解析して、EC-CUBE3.1系に互換性のあるコードに変換します。このツールは [Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) をフォークしています。
+EC-CUBE4.1系のプラグインプロジェクトを解析して、EC-CUBE4.2系に互換性のあるコードに変換します。このツールは [Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) をフォークしています。
 
 ## インストール
 
@@ -23,6 +23,11 @@ $ sudo chmod a+x /usr/local/bin/eccube-upgrade-fixer
 ### Composer
 
 Composerでのインストール方法は今のところありません。
+
+## システム要件
+
+このFixerはPHP7.4で動作します。
+現在PHP8には対応していません。
 
 ## 使い方
 
@@ -63,7 +68,7 @@ docker run --rm -v /path/to/plugin:/app eccube/upgrade-fixer fix /app
 ## Contribute
 
 このツールは[Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer)をフォークしています。
-EC-CUBE3.1系に特化したものでないなら、[Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) にコントリビュートしてください。
+EC-CUBEに特化したものでないなら、[Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) にコントリビュートしてください。
 
 このREADMEにコントリビュートする場合は、直接`README.md`を変更するのではなく、`README.tpl`を変更してから以下のコマンドを実行してください:
 ```bash

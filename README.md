@@ -1,6 +1,6 @@
 # EC-CUBE Upgrade Fixer [![Build Status](https://travis-ci.org/EC-CUBE/Eccube-Upgrade-Fixer.svg)](https://travis-ci.org/EC-CUBE/Eccube-Upgrade-Fixer)
 
-EC-CUBE3.0系のプラグインプロジェクトを解析して、EC-CUBE3.1系に互換性のあるコードに変換します。このツールは [Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) をフォークしています。
+EC-CUBE4.1系のプラグインプロジェクトを解析して、EC-CUBE4.2系に互換性のあるコードに変換します。このツールは [Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) をフォークしています。
 
 ## インストール
 
@@ -23,6 +23,11 @@ $ sudo chmod a+x /usr/local/bin/eccube-upgrade-fixer
 ### Composer
 
 Composerでのインストール方法は今のところありません。
+
+## システム要件
+
+このFixerはPHP7.4で動作します。
+現在PHP8には対応していません。
 
 ## 使い方
 
@@ -56,27 +61,27 @@ docker run --rm -v /path/to/plugin:/app eccube/upgrade-fixer fix /app
 
 ## 利用可能なFixer一覧
 
-| Name                             | Description                                                                                 |
-|----------------------------------|---------------------------------------------------------------------------------------------|
-| doctrine_namespace               | Update Doctrine namespacing                                                                 |
-| email_validator                  | Fix up strict validation changes to email. From an instance reference to CONSTANT reference |
-| email_validator_parameter_update | Email validation parameter updated                                                          |
-| event_dispatcher                 | Switch EC-CUBE Event dispatcher parameters                                                  |
-| event_namespace_update           | Response event namespace update.                                                            |
-| extended_types_type_return       | Add iterable type return to getExtendedTypes() class                                        |
-| pDOFunction_update               | fetchOne to fetchRow Update                                                                 |
-| pHP8_parameter                   | Fixes for php 8                                                                             |
-| pHPDOC                           | Fixes to incorrect php doc class references                                                 |
-| remove_format_from_date_form     | Remove date parameter from DateType::class                                                  |
-| swift_mailer_change              | Update from \Swift_Mailer to Symfony 5 MailerInterface                                      |
-| translation_class                | Translation class fixes                                                                     |
-| unit_test                        | UnitTest setUp function requires void return type                                           |
+| Name  | Description |
+| ----  | ----------- |
+| doctrine_namespace | Update Doctrine namespacing |
+| email_validator | Fix up strict validation changes to email. From an instance reference to CONSTANT reference |
+| email_validator_parameter_update | Email validation parameter updated |
+| event_dispatcher | Switch EC-CUBE Event dispatcher parameters |
+| event_namespace_update | Response event namespace update. |
+| extended_types_type_return | Add iterable type return to getExtendedTypes() class |
+| pDOFunction_update | fetchOne to fetchRow Update |
+| pHP8_parameter | Fixes for php 8 |
+| pHPDOC | Fixes to incorrect php doc class references |
+| remove_format_from_date_form | Remove date parameter from DateType::class |
+| swift_mailer_change | Update from \Swift_Mailer to Symfony 5 MailerInterface |
+| translation_class | Translation class fixes |
+| unit_test | UnitTest setUp function requires void return type |
 
 
 ## Contribute
 
 このツールは[Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer)をフォークしています。
-EC-CUBE3.1系に特化したものでないなら、[Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) にコントリビュートしてください。
+EC-CUBEに特化したものでないなら、[Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) にコントリビュートしてください。
 
 このREADMEにコントリビュートする場合は、直接`README.md`を変更するのではなく、`README.tpl`を変更してから以下のコマンドを実行してください:
 ```bash
