@@ -3,12 +3,12 @@
 namespace Symfony\Upgrade;
 
 use PhpCsFixer\Error\ErrorsManager;
-use Symfony\CS\FixerInterface;
-use Symfony\CS\Tokenizer\Tokens;
+use PhpCsFixer\Tokenizer\Tokens;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo as FinderSplFileInfo;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Upgrade\Fixer\Iterator\FixerIterator;
+use PhpCsFixer\Fixer\FixerInterface;
 
 class Fixer
 {
@@ -48,6 +48,7 @@ class Fixer
 
     public function fix($dryRun = false)
     {
+        // ここがアップデートの本丸
         $changed = [];
 
         if ($this->stopwatch) {
@@ -55,16 +56,19 @@ class Fixer
         }
 
         foreach ($this->finder as $file) {
+            // 各ファイルの判定を実施している
             if ($file->isDir() || $file->isLink()) {
+                // リンクやディレクトリは無視する
                 continue;
             }
-
             if ($this->stopwatch) {
                 $this->stopwatch->start($this->getFileRelativePathname($file));
             }
 
             if ($fixInfo = $this->fixFile($file, $dryRun)) {
                 $changed[$this->getFileRelativePathname($file)] = $fixInfo;
+            }else{
+                var_dump("書き換え対象ではない");
             }
 
             if ($this->stopwatch) {
@@ -81,11 +85,13 @@ class Fixer
 
     private function fixFile(\SplFileInfo $file, $dryRun)
     {
+        var_dump($file->getRealpath()."判定開始");
         $new = $old = file_get_contents($file->getRealpath());
 
         $appliedFixers = [];
 
         Tokens::clearCache();
+        $tokens = Tokens::fromCode($new);
 
         try {
             foreach ($this->fixers as $fixer) {
@@ -93,25 +99,34 @@ class Fixer
                     continue;
                 }
 
-                $newest = $fixer->fix($file, $new);
+
+                $newest = $fixer->applyFix($file, $tokens);
+                var_dump("変更後がどうなるかのデータは取得");
+
                 if ($newest !== $new) {
                     $appliedFixers[] = $fixer->getName();
                 }
                 $new = $newest;
             }
         } catch (\Exception $e) {
+            var_dump("エラーが出た");
             if ($this->errorsManager) {
                 $this->errorsManager->report(ErrorsManager::ERROR_TYPE_EXCEPTION, $this->getFileRelativePathname($file), $e->__toString());
             }
             return;
         }
 
+        // 書き換え対象と判定された場合は @todo 各自でやらせる
         if ($new !== $old) {
+            // ドライランでない限り
+
             if (!$dryRun) {
+                // 書き換えを実行する
                 file_put_contents($file->getRealpath(), $new);
             }
         }
-
+        
+        // 配列が返される
         return $appliedFixers;
     }
 

@@ -33,6 +33,7 @@ abstract class RenameFixer extends AbstractFixer
             [T_STRING, $functionName]
         ], $index);
 
+        var_dump("testpoint");
         if ($matchedTokens == null) {
             return;
         }

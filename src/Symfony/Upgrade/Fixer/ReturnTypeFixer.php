@@ -9,6 +9,7 @@ abstract class ReturnTypeFixer extends RenameFixer
 {
     public function upsertReturnType(Tokens $tokens, string $class, string $function, string $returnType, int $indexFrom = 0)
     {
+        // 全く稼働していない
         // Update return type
         /** @var Token[] * */
         $matchedTokens = $tokens->findSequence([
@@ -19,7 +20,7 @@ abstract class ReturnTypeFixer extends RenameFixer
         ],
             $indexFrom
         );
-
+        
         if ($matchedTokens == null) {
             return;
         }
