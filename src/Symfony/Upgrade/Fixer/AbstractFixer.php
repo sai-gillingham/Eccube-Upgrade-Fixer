@@ -2,7 +2,7 @@
 
 namespace Symfony\Upgrade\Fixer;
 
-use Symfony\CS\AbstractFixer as BaseAbstractFixer;
+use PhpCsFixer\AbstractFixer as BaseAbstractFixer ; 
 use Symfony\CS\Tokenizer\Token;
 use Symfony\CS\Tokenizer\Tokens;
 

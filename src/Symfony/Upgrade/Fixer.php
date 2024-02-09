@@ -2,7 +2,7 @@
 
 namespace Symfony\Upgrade;
 
-use Symfony\CS\ErrorsManager;
+use PhpCsFixer\Error\ErrorsManager;
 use Symfony\CS\FixerInterface;
 use Symfony\CS\Tokenizer\Tokens;
 use Symfony\Component\Finder\Finder;
