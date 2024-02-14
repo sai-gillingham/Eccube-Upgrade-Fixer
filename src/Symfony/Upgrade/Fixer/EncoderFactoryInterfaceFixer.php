@@ -30,7 +30,6 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
         if ($this->isHasContainerInterface($tokens)) {
-            var_dump("見つけた");
             $this->fixServiceInterface($tokens);
 
             file_put_contents($file, $tokens->generateCode());
@@ -41,7 +40,6 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
 
     private function fixServiceInterface(Tokens $tokens)
     {
-        var_dump("処理開始");
         // FindsequenceでEncoderFactoryInterfaceクラスを使っているかを判断
         $useTokens = $tokens->findSequence([
             [T_USE],
@@ -59,20 +57,14 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
         ]);
 
         if ($useTokens) {
-            var_dump("チェックポイント1");
             $useTokenIndexes = array_keys($useTokens);
 
             //use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface
             //use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface as EncoderFactoryInterface
-            var_dump("チェックポイント2");
-            $newContent1 = new Token([T_STRING, 'PasswordHacher']);
-            var_dump("チェックポイント3");
-            $newContent2 = new Token([T_STRING, 'Hacher']);
-            var_dump("チェックポイント4");
+            $newContent1 = new Token([T_STRING, 'PasswordHasher']);
+            $newContent2 = new Token([T_STRING, 'Hasher']);
             $newContent3 = new Token([T_STRING, 'UserPasswordHasherInterface']);
-            var_dump("チェックポイント5");
             $newContent4 = new Token([T_WHITESPACE, ' ']);
-            var_dump("チェックポイント6");
             $newContent5 = new Token([T_AS, 'as']);
 
             $tokens[$useTokenIndexes[5]] = $newContent1;
@@ -97,7 +89,6 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
     private function isHasContainerInterface($tokens)
     {
         // ネームスペースを区切って見つけたいクラスを発掘する
-        var_dump("エンコーダーを見つける");
         $fqcn = ['Symfony','Component', 'Security', 'Core','Encoder','EncoderFactoryInterface'];
         if (!$this->hasUseStatements($tokens, $fqcn)) {
             return false;

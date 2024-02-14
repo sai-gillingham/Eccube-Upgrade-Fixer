@@ -29,7 +29,6 @@ class GetDirFixer extends AbstractFixer
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
-        var_dump("GetDirのapplyFix稼働");
 
         $flag = false;
         while ($this->isHasContainerInterface($tokens)) {
@@ -63,24 +62,20 @@ class GetDirFixer extends AbstractFixer
         //$eccubeConfig = $container->get(EccubeConfig::class);
         //$templateDir = $eccubeConfig->get('eccube_theme_front_dir');
         $useTokens = $tokens->findSequence([
-            [T_VARIABLE, '$container'],
+            [T_VARIABLE],
             [T_OBJECT_OPERATOR],
             [T_STRING, 'getParameter']
         ]);
-        var_dump("ここからが勝負");
 
         
         if ($useTokens) {
             // $useTokensの一個目の名前空間の削除
             $useTokenIndexes = array_keys($useTokens);
-            var_dump("いらない子を削除");
 
             // スライドしてきた一個目の名前空間をPsrに変更
             // 二個目をContainerに変更
-            var_dump("トークン作成");
             $changeContent1 = new Token([T_STRING, 'get']);
             
-            var_dump("トークンを書き換えるよ!");
             $tokens[$useTokenIndexes[2]] = $changeContent1;
 
             // 追加トークンを列挙
@@ -108,7 +103,7 @@ class GetDirFixer extends AbstractFixer
         $matchedTokens = null;
         do {
             $matchedTokens = $tokens->findSequence([
-                [T_VARIABLE],
+                [T_VARIABLE,'$container','$serviceContainer'],
                 [T_OBJECT_OPERATOR],
                 [T_STRING, 'share'],
                 '('
@@ -153,19 +148,8 @@ class GetDirFixer extends AbstractFixer
 
     private function isHasContainerInterface($tokens)
     {
-        //$templateDir = $container->getParameter('eccube_theme_front_dir');
-
-        //$eccubeConfig = $container->get(EccubeConfig::class);
-        //$templateDir = $eccubeConfig->get('eccube_theme_front_dir');
-        var_dump("対象を見つけるで！");
-        var_dump($tokens->findSequence([
-            [T_VARIABLE, '$container'],
-            [T_OBJECT_OPERATOR, '->'],
-            [T_STRING, 'getParameter']
-        ]));
-
         return null !== $tokens->findSequence([
-                [T_VARIABLE, '$container'],
+                [T_VARIABLE, '$container','$serviceContainer'],
                 [T_OBJECT_OPERATOR],
                 [T_STRING, 'getParameter']
             ]);
