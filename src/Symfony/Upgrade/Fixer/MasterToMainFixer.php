@@ -10,7 +10,7 @@ use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use Symfony\Upgrade\Util\UseTokenUtil;
 
-class RequestStackFixer extends AbstractFixer
+class MasterToMainFixer extends AbstractFixer
 {
     public function isCandidate(Tokens $tokens): bool
     {
