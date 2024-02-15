@@ -20,10 +20,10 @@ class NewTokenFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
+            'Symfony6.0更新による引数の変更に対応します',
+            [new CodeSample("new UsernamePasswordToken($Customer[0], null, 'customer', ['ROLE_USER'])")],
             null,
-            'Risky when the function `array_push` is overridden.'
+            null
         );
     }
 

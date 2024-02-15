@@ -20,10 +20,10 @@ class GetRepositoryFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
+            'コンテナからレポジトリクラスを取得する方法を変更します',
+            [new CodeSample("get(Eccube\Repository\CustomerRepository)")],
             null,
-            'Risky when the function `array_push` is overridden.'
+            'controllerの$this->getは変更対象から除外しています'
         );
     }
 
@@ -41,8 +41,6 @@ class GetRepositoryFixer extends AbstractFixer
             if($token->getContent() == "get"){
                 // 引数の判定を実行
                 if(str_contains($RepositoryClass = $tokens[$key +2]->getContent(), "\Repository\\")){
-                    // get(レポジトリクラス指定);
-                    // get('doctrine.orm.entity_manager')->getRepository(エンティティクラス::class);
                     
                     // **Repositoryの文字列を取得
                     $position = strrpos($RepositoryClass, '\\');

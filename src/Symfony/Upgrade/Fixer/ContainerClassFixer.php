@@ -20,10 +20,10 @@ class ContainerClassFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
-            null,
-            'Risky when the function `array_push` is overridden.'
+            'コンテナクラスの取得先を変更します', //説明
+            [new CodeSample("Symfony\Component\DependencyInjection\ContainerInterface")], //変更前
+            null, //詳細説明
+            'services.yamlの追記は未対応です' // 注意点
         );
     }
 
@@ -32,11 +32,8 @@ class ContainerClassFixer extends AbstractFixer
         if ($this->isHasContainerInterface($tokens)) {
             $this->fixServiceInterface($tokens);
 
-            //var_dump($tokens->generateCode());
             file_put_contents($file, $tokens->generateCode());
         }
-        
-        //return $tokens->generateCode();
     }
 
     private function fixServiceInterface(Tokens $tokens)
@@ -76,30 +73,6 @@ class ContainerClassFixer extends AbstractFixer
         }
     }
 
-    /**
-     * @param Tokens|$tokens
-     */
-    private function fixShare($tokens)
-    {
-        $currentIndex = 0;
-        $matchedTokens = null;
-        do {
-            $matchedTokens = $tokens->findSequence([
-                [T_VARIABLE],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'share'],
-                '('
-            ], $currentIndex);
-            if ($matchedTokens) {
-                $matchedIndexes = array_keys($matchedTokens);
-                $blockEnd = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, end($matchedIndexes));
-                $tokens->clearRange($matchedIndexes[0], end($matchedIndexes));
-                $tokens[$blockEnd]->clear();
-                $currentIndex = $blockEnd + 1;
-            }
-        } while ($matchedTokens);
-    }
-
     private function isHasContainerInterface($tokens)
     {
         // ネームスペースを区切って見つけたいクラスを発掘する
@@ -109,14 +82,6 @@ class ContainerClassFixer extends AbstractFixer
         }else{
             return true;
         }
-
-
-        return null !== $tokens->findSequence([
-                [T_CLASS],
-                [T_STRING],
-                [T_IMPLEMENTS],
-                [T_STRING, array_pop($fqcn)],
-            ]);
     }
 
     public function getDescription()

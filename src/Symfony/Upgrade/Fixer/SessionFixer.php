@@ -20,10 +20,10 @@ class SessionFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
+            'セッションデータの取得先を変更',
+            [new CodeSample("Symfony\Component\HttpFoundation\Session\SessionInterface")],
             null,
-            'Risky when the function `array_push` is overridden.'
+            null
         );
     }
 
@@ -36,10 +36,7 @@ class SessionFixer extends AbstractFixer
             $this->fixUseClass($tokens);
 
             file_put_contents($file, $tokens->generateCode());
-            //var_dump($tokens->generateCode());
         }
-        
-        //return $tokens->generateCode();
     }
 
     private function fixUseClass(Tokens $tokens)

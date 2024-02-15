@@ -14,14 +14,9 @@ class FixerIterator implements \IteratorAggregate
             $class = 'Symfony\\Upgrade\\Fixer\\'.$file->getBasename('.php');
             var_dump($class."が書き換え対象かを判定");
             if ((new \ReflectionClass($class))->isAbstract()) {
-                var_dump("abstractなので対象ではない");
                 continue;
-            }else{
-                var_dump("書き換え対象です");
             }
-
             $this->fixers[] = new $class();
-            //var_dump("書き換え対象は".$this->fixers);
         }
     }
 

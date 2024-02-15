@@ -20,10 +20,10 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
+            'EncoderFactoryInterfaceクラスの取得先を変更します',
+            [new CodeSample("use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface")],
             null,
-            'Risky when the function `array_push` is overridden.'
+            null
         );
     }
 
@@ -59,8 +59,6 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
         if ($useTokens) {
             $useTokenIndexes = array_keys($useTokens);
 
-            //use Symfony\Component\Security\Core\Encoder\EncoderFactoryInterface
-            //use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface as EncoderFactoryInterface
             $newContent1 = new Token([T_STRING, 'PasswordHasher']);
             $newContent2 = new Token([T_STRING, 'Hasher']);
             $newContent3 = new Token([T_STRING, 'UserPasswordHasherInterface']);
@@ -95,23 +93,6 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
         }else{
             return true;
         }
-
-        var_dump("見つけた!");
-
-        return null !== $tokens->findSequence([
-                [T_USE],
-                [T_STRING, 'Symfony'],
-                [T_NS_SEPARATOR],
-                [T_STRING, 'Component'],
-                [T_NS_SEPARATOR],
-                [T_STRING, 'Security'],
-                [T_NS_SEPARATOR],
-                [T_STRING, 'Core']
-                [T_NS_SEPARATOR],
-                [T_STRING, 'Encoder'],
-                [T_NS_SEPARATOR],
-                [T_STRING, 'EncoderFactoryInterface']
-            ]);
     }
 
     public function getDescription()

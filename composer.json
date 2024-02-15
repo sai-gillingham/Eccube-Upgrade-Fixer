@@ -1,7 +1,7 @@
 {
     "name": "umpirsky/symfony-upgrade-fixer",
     "type": "application",
-    "description": "Analyzes your Symfony project and tries to make it compatible with the new version of Symfony framework.",
+    "description": "Eccube4.3に対応するようコードの変換を行います",
     "license": "MIT",
     "authors": [
         {

@@ -67,8 +67,6 @@ class Fixer
 
             if ($fixInfo = $this->fixFile($file, $dryRun)) {
                 $changed[$this->getFileRelativePathname($file)] = $fixInfo;
-            }else{
-                var_dump("書き換え対象ではない");
             }
 
             if ($this->stopwatch) {
@@ -85,7 +83,6 @@ class Fixer
 
     private function fixFile(\SplFileInfo $file, $dryRun)
     {
-        var_dump($file->getRealpath()."判定開始");
         $new = $old = file_get_contents($file->getRealpath());
 
         $appliedFixers = [];
@@ -101,7 +98,6 @@ class Fixer
 
 
                 $newest = $fixer->applyFix($file, $tokens);
-                var_dump("変更後がどうなるかのデータは取得");
 
                 if ($newest !== $new) {
                     $appliedFixers[] = $fixer->getName();
@@ -109,7 +105,7 @@ class Fixer
                 $new = $newest;
             }
         } catch (\Exception $e) {
-            var_dump("エラーが出た");
+
             if ($this->errorsManager) {
                 $this->errorsManager->report(ErrorsManager::ERROR_TYPE_EXCEPTION, $this->getFileRelativePathname($file), $e->__toString());
             }
@@ -119,7 +115,6 @@ class Fixer
         // 書き換え対象と判定された場合は @todo 各自でやらせる
         if ($new !== $old) {
             // ドライランでない限り
-
             if (!$dryRun) {
                 // 書き換えを実行する
                 file_put_contents($file->getRealpath(), $new);

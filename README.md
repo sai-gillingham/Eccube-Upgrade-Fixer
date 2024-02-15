@@ -4,8 +4,6 @@ EC-CUBE4.2系のプラグインプロジェクトを解析して、EC-CUBE4.3系
 
 ## インストール
 
-### 手動
-
 ### Composer
 
 ``composer install``コマンドでインストールできます。

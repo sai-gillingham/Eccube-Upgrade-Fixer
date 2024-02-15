@@ -20,10 +20,10 @@ class GetDirFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
+            'containerクラスのgetParameterメソッドを変更しEccubeConfigを経由して取得します',
+            [new CodeSample('$templateDir = $container->getParameter("eccube_theme_front_dir")')],
             null,
-            'Risky when the function `array_push` is overridden.'
+            null
         );
     }
 
@@ -45,15 +45,10 @@ class GetDirFixer extends AbstractFixer
         if($flag){
             file_put_contents($file, $tokens->generateCode());
         }
-        
-        //return $tokens->generateCode();
     }
 
     private function fixServiceInterface(Tokens $tokens)
     {
-        //$templateDir = $container->getParameter('eccube_theme_front_dir');
-        //$templateDir = $container->get(EccubeConfig::class)->get('eccube_theme_front_dir');
-
         //getParameterをgetに　変更
         //引数としてEccubeConfigクラスを設定　追加
         //矢印を追加　追加
