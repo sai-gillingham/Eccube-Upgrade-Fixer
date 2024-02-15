@@ -30,10 +30,10 @@ class SessionFixer extends AbstractFixer
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
         if ($this->isHasContainerInterface($tokens)) {
-            var_dump("見つけた");
-            $this->fixUseClass($tokens);
             $this->fixArgument($tokens);
             $this->fixSetting($tokens);
+            // コンストラクタの分岐に元トークンの使用クラスが使用されるため、使用クラスの書き換えは最後にする
+            $this->fixUseClass($tokens);
 
             file_put_contents($file, $tokens->generateCode());
             //var_dump($tokens->generateCode());
@@ -104,8 +104,11 @@ class SessionFixer extends AbstractFixer
             [T_NS_SEPARATOR],
             [T_STRING, 'RequestStack'],
         ]);
+        // すでにRequestStackがある場合はsessionの引数を削除する
         if($targetTokens){
-            return;
+            $deleteFlag = true;
+        }else{
+            $deleteFlag = false;
         }
 
         $useTokens = $tokens->findSequence([
@@ -115,17 +118,26 @@ class SessionFixer extends AbstractFixer
 
         if ($useTokens) {
             $useTokenIndexes = array_keys($useTokens);
-            $newContent1 = new Token([T_STRING, 'RequestStack']);
-            $newContent2 = new Token([T_VARIABLE, '$requestStack']);
 
-            $tokens[$useTokenIndexes[0]] = $newContent1;
-            $tokens[$useTokenIndexes[1]] = $newContent2;
+            if($deleteFlag){
+                $tokens->clearTokenAndMergeSurroundingWhitespace($useTokenIndexes[0]);
+                $tokens->clearTokenAndMergeSurroundingWhitespace($useTokenIndexes[1]);
+                // 「,」も消す必要がある
+                $tokens->clearTokenAndMergeSurroundingWhitespace($useTokenIndexes[1] + 1);
+                // @todo 実行には問題ないが不自然な空白が残るので対処したい
+                var_dump($tokens[$useTokenIndexes[1] + 2]);
+            }else{
+                $newContent1 = new Token([T_STRING, 'RequestStack']);
+                $newContent2 = new Token([T_VARIABLE, '$requestStack']);
+
+                $tokens[$useTokenIndexes[0]] = $newContent1;
+                $tokens[$useTokenIndexes[1]] = $newContent2;
+            }
         }
     }
 
     private function fixSetting(Tokens $tokens)
     {
-        var_dump("定義を修正");
         $useTokens = $tokens->findSequence([
             [T_VARIABLE, '$this'],
             [T_OBJECT_OPERATOR],
@@ -163,15 +175,12 @@ class SessionFixer extends AbstractFixer
     private function isHasContainerInterface($tokens)
     {
         // ネームスペースを区切って見つけたいクラスを発掘する
-        var_dump("セッションinterfaceを使用しているかを判定");
         $fqcn = ['Symfony','Component', 'HttpFoundation', 'Session','SessionInterface'];
         if (!$this->hasUseStatements($tokens, $fqcn)) {
             return false;
         }else{
             return true;
         }
-
-        var_dump("見つけた!");
     }
 
     public function getDescription()

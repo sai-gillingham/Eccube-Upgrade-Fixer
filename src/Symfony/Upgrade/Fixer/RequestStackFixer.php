@@ -6,6 +6,7 @@ namespace Symfony\Upgrade\Fixer;
 use PhpCsFixer\FixerDefinition\CodeSample;
 use PhpCsFixer\FixerDefinition\FixerDefinition;
 use PhpCsFixer\FixerDefinition\FixerDefinitionInterface;
+use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use Symfony\Upgrade\Util\UseTokenUtil;
 
@@ -47,7 +48,7 @@ class RequestStackFixer extends AbstractFixer
         
         if ($useTokens) {
             $useTokenIndexes = array_keys($useTokens);
-            $tokens[$useTokenIndexes[0]]->setContent('getMainRequest');
+            $tokens[$useTokenIndexes[0]] = new Token([T_STRING, 'getMainRequest']);
         }
 
         

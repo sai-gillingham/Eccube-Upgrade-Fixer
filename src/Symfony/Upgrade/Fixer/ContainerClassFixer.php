@@ -100,34 +100,6 @@ class ContainerClassFixer extends AbstractFixer
         } while ($matchedTokens);
     }
 
-    /**
-     * @param Tokens|$tokens
-     */
-    private function fixExtend($tokens)
-    {
-        $currentIndex = 0;
-        $matchedTokens = null;
-        do {
-            $matchedTokens = $tokens->findSequence([
-                [T_VARIABLE],
-                '[',
-                [T_CONSTANT_ENCAPSED_STRING],
-                ']',
-                '=',
-                [T_VARIABLE],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'extend']
-            ], $currentIndex);
-            if ($matchedTokens) {
-                $matchedIndexes = array_keys($matchedTokens);
-                $assignmentTokenIndex = $matchedIndexes[4];
-                $tokens->clearRange($matchedIndexes[0], $assignmentTokenIndex);
-                $tokens->removeTrailingWhitespace($assignmentTokenIndex);
-                $currentIndex = end($matchedIndexes) + 1;
-            }
-        } while ($matchedTokens);
-    }
-
     private function isHasContainerInterface($tokens)
     {
         // ネームスペースを区切って見つけたいクラスを発掘する

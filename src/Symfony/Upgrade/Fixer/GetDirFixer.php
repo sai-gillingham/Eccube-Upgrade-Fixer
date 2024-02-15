@@ -29,6 +29,12 @@ class GetDirFixer extends AbstractFixer
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
+        // ファイル名を確認、**Controller.phpの場合は処理しない
+        // controllerにおいてコンテナからgetParameter()は実行することが無い前提です
+        $filename = $file->getFilename();
+        if(str_contains($filename, 'Controller.php')){
+            return;
+        }
 
         $flag = false;
         while ($this->isHasContainerInterface($tokens)) {
@@ -45,22 +51,13 @@ class GetDirFixer extends AbstractFixer
 
     private function fixServiceInterface(Tokens $tokens)
     {
-
         //$templateDir = $container->getParameter('eccube_theme_front_dir');
-
         //$templateDir = $container->get(EccubeConfig::class)->get('eccube_theme_front_dir');
 
-
         //getParameterをgetに　変更
-
         //引数としてEccubeConfigクラスを設定　追加
-
         //矢印を追加　追加
-
         //getメソッドを追加　追加
-
-        //$eccubeConfig = $container->get(EccubeConfig::class);
-        //$templateDir = $eccubeConfig->get('eccube_theme_front_dir');
         $useTokens = $tokens->findSequence([
             [T_VARIABLE],
             [T_OBJECT_OPERATOR],
@@ -69,11 +66,9 @@ class GetDirFixer extends AbstractFixer
 
         
         if ($useTokens) {
-            // $useTokensの一個目の名前空間の削除
             $useTokenIndexes = array_keys($useTokens);
 
-            // スライドしてきた一個目の名前空間をPsrに変更
-            // 二個目をContainerに変更
+            // 3個目をContainerに変更
             $changeContent1 = new Token([T_STRING, 'get']);
             
             $tokens[$useTokenIndexes[2]] = $changeContent1;
@@ -94,62 +89,10 @@ class GetDirFixer extends AbstractFixer
         }
     }
 
-    /**
-     * @param Tokens|$tokens
-     */
-    private function fixShare($tokens)
-    {
-        $currentIndex = 0;
-        $matchedTokens = null;
-        do {
-            $matchedTokens = $tokens->findSequence([
-                [T_VARIABLE,'$container','$serviceContainer'],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'share'],
-                '('
-            ], $currentIndex);
-            if ($matchedTokens) {
-                $matchedIndexes = array_keys($matchedTokens);
-                $blockEnd = $tokens->findBlockEnd(Tokens::BLOCK_TYPE_PARENTHESIS_BRACE, end($matchedIndexes));
-                $tokens->clearRange($matchedIndexes[0], end($matchedIndexes));
-                $tokens[$blockEnd]->clear();
-                $currentIndex = $blockEnd + 1;
-            }
-        } while ($matchedTokens);
-    }
-
-    /**
-     * @param Tokens|$tokens
-     */
-    private function fixExtend($tokens)
-    {
-        $currentIndex = 0;
-        $matchedTokens = null;
-        do {
-            $matchedTokens = $tokens->findSequence([
-                [T_VARIABLE],
-                '[',
-                [T_CONSTANT_ENCAPSED_STRING],
-                ']',
-                '=',
-                [T_VARIABLE],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'extend']
-            ], $currentIndex);
-            if ($matchedTokens) {
-                $matchedIndexes = array_keys($matchedTokens);
-                $assignmentTokenIndex = $matchedIndexes[4];
-                $tokens->clearRange($matchedIndexes[0], $assignmentTokenIndex);
-                $tokens->removeTrailingWhitespace($assignmentTokenIndex);
-                $currentIndex = end($matchedIndexes) + 1;
-            }
-        } while ($matchedTokens);
-    }
-
     private function isHasContainerInterface($tokens)
     {
         return null !== $tokens->findSequence([
-                [T_VARIABLE, '$container','$serviceContainer'],
+                [T_VARIABLE],
                 [T_OBJECT_OPERATOR],
                 [T_STRING, 'getParameter']
             ]);

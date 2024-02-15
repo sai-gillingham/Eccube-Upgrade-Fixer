@@ -40,9 +40,9 @@ class FixCommand extends Command
             $errorsManager,
             $stopwatch
         );
-        var_dump("RenameFixerが稼働");
+        
         $this->fixer->registerBuiltInFixers();
-        var_dump("RenameFixer稼働終了");
+        
         /*
         if (! $input->getOption('no-use-reorder')) {
             $this->fixer->addFixer(new OrderedUseFixer());
