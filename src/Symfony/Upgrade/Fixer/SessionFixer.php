@@ -122,7 +122,6 @@ class SessionFixer extends AbstractFixer
                 // 「,」も消す必要がある
                 $tokens->clearTokenAndMergeSurroundingWhitespace($useTokenIndexes[1] + 1);
                 // @todo 実行には問題ないが不自然な空白が残るので対処したい
-                var_dump($tokens[$useTokenIndexes[1] + 2]);
             }else{
                 $newContent1 = new Token([T_STRING, 'RequestStack']);
                 $newContent2 = new Token([T_VARIABLE, '$requestStack']);

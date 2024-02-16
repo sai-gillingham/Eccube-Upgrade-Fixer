@@ -34,8 +34,6 @@ class EncoderFactoryInterfaceFixer extends AbstractFixer
 
             file_put_contents($file, $tokens->generateCode());
         }
-        
-        //return $tokens->generateCode();
     }
 
     private function fixServiceInterface(Tokens $tokens)

@@ -21,7 +21,7 @@ class NewTokenFixer extends AbstractFixer
     {
         return new FixerDefinition(
             'Symfony6.0更新による引数の変更に対応します',
-            [new CodeSample("new UsernamePasswordToken($Customer[0], null, 'customer', ['ROLE_USER'])")],
+            [new CodeSample('new UsernamePasswordToken($Customer[0], null, "customer", ["ROLE_USER"])')],
             null,
             null
         );

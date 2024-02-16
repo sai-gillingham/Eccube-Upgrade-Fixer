@@ -1,5 +1,5 @@
 {
-    "name": "umpirsky/symfony-upgrade-fixer",
+    "name": "eccube/eccube-upgrade-fixer",
     "type": "application",
     "description": "Eccube4.3に対応するようコードの変換を行います",
     "license": "MIT",
