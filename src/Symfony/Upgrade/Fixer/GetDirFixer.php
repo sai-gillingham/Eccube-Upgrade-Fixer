@@ -23,54 +23,44 @@ class GetDirFixer extends AbstractFixer
             'containerクラスのgetParameterメソッドを変更しEccubeConfigを経由して取得します',
             [new CodeSample('$templateDir = $container->getParameter("eccube_theme_front_dir")')],
             null,
-            null
+            'コンテナクラスの変数名に「container」もしくは「Container」が含まれる前提となっています'
         );
     }
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
-        // ファイル名を確認、**Controller.phpの場合は処理しない
-        // controllerにおいてコンテナからgetParameter()は実行することが無い前提です
-        $filename = $file->getFilename();
-        if(str_contains($filename, 'Controller.php')){
+        // 使用クラスを確認　ContainerInterfaceを使っていないなら判定する必要は無い
+        $fqcn = ['Psr','Container', 'ContainerInterface'];
+        if (!$this->hasUseStatements($tokens, $fqcn)) {
             return;
         }
 
         $flag = false;
-        while ($this->isHasContainerInterface($tokens)) {
-            $this->fixServiceInterface($tokens);
+
+        foreach($tokens as $key => $token){
+            $content = $token->getContent();
+
+            // **container->getParameterの並びを抽出する
+            if(!str_contains($content, 'Container' && !str_contains($content, 'container'))){
+                continue;
+            }
+
+            if($tokens[$key + 1]->getContent() !== '->'){
+                continue;
+            }
+
+            if($tokens[$key + 2]->getContent() !== 'getParameter'){
+                continue;
+            }
             $flag = true;
-        }
-
-        if($flag){
-            file_put_contents($file, $tokens->generateCode());
-        }
-    }
-
-    private function fixServiceInterface(Tokens $tokens)
-    {
-        //getParameterをgetに　変更
-        //引数としてEccubeConfigクラスを設定　追加
-        //矢印を追加　追加
-        //getメソッドを追加　追加
-        $useTokens = $tokens->findSequence([
-            [T_VARIABLE],
-            [T_OBJECT_OPERATOR],
-            [T_STRING, 'getParameter']
-        ]);
-
-        
-        if ($useTokens) {
-            $useTokenIndexes = array_keys($useTokens);
 
             // 3個目をContainerに変更
             $changeContent1 = new Token([T_STRING, 'get']);
-            
-            $tokens[$useTokenIndexes[2]] = $changeContent1;
+            $tokens[$key + 2] = $changeContent1;
 
             // 追加トークンを列挙
             $tokens->insertAt(
-                $useTokenIndexes[2] + 1,
+                $key + 3,
                 array_merge(
                     [
                         new Token([T_STRING, '(']),
@@ -82,15 +72,10 @@ class GetDirFixer extends AbstractFixer
                 )
             );
         }
-    }
 
-    private function isHasContainerInterface($tokens)
-    {
-        return null !== $tokens->findSequence([
-                [T_VARIABLE],
-                [T_OBJECT_OPERATOR],
-                [T_STRING, 'getParameter']
-            ]);
+        if($flag){
+            file_put_contents($file, $tokens->generateCode());
+        }
     }
 
     public function getDescription()
