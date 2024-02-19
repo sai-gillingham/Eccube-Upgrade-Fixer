@@ -20,26 +20,26 @@ class MasterToMainFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'Converts simple usages of `array_push($x, $y);` to `$x[] = $y;`.',
-            [new CodeSample("<?php\narray_push(\$x, \$y);\n")],
+            'masterRequest系のメソッド名を修正します',
+            [new CodeSample("isMasterRequest(")],
             null,
-            'Risky when the function `array_push` is overridden.'
+            null
         );
     }
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
-        while ($this->isGetMainRequest($tokens)) {
-            $this->fixRename($tokens);
+        while ($this->isGetMasterRequest($tokens)) {
+            $this->fixRename1($tokens);
+        }
+
+        while ($this->isIsMasterRequest($tokens)){
+            $this->fixRename2($tokens);
         }
     }
 
-    private function fixRename(Tokens $tokens)
+    private function fixRename1(Tokens $tokens)
     {
-
-        /*
-         * Silex\ServiceProviderInterface -> Pimple\ServiceProviderInterface に変更
-         */
         $useTokens = $tokens->findSequence([
             [T_STRING, 'getMasterRequest'],
         ]);
@@ -50,10 +50,30 @@ class MasterToMainFixer extends AbstractFixer
         }   
     }
 
-    private function isGetMainRequest($tokens)
+    private function fixRename2(Tokens $tokens)
+    {
+        $useTokens = $tokens->findSequence([
+            [T_STRING, 'isMasterRequest'],
+        ]);
+        
+        if ($useTokens) {
+            $useTokenIndexes = array_keys($useTokens);
+            $tokens[$useTokenIndexes[0]] = new Token([T_STRING, 'isMainRequest']);
+        }   
+    }
+
+    private function isGetMasterRequest($tokens)
     {
         return $tokens->findSequence([
             [T_STRING, 'getMasterRequest']
+        ]);
+
+    }
+
+    private function isIsMasterRequest($tokens)
+    {
+        return $tokens->findSequence([
+            [T_STRING, 'isMasterRequest']
         ]);
 
     }
