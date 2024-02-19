@@ -32,8 +32,6 @@ class MasterToMainFixer extends AbstractFixer
         while ($this->isGetMainRequest($tokens)) {
             $this->fixRename($tokens);
         }
-        //return $tokens->generateCode();
-        file_put_contents($file, $tokens->generateCode());
     }
 
     private function fixRename(Tokens $tokens)

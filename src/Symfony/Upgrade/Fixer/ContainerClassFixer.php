@@ -31,8 +31,6 @@ class ContainerClassFixer extends AbstractFixer
     {
         if ($this->isHasContainerInterface($tokens)) {
             $this->fixServiceInterface($tokens);
-
-            file_put_contents($file, $tokens->generateCode());
         }
     }
 

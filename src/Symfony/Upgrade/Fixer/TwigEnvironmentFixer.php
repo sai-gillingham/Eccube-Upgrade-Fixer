@@ -39,8 +39,6 @@ class TwigEnvironmentFixer extends AbstractFixer
                 $tokens[$key] = $newToken;
             }
         }
-
-        file_put_contents($file, $tokens->generateCode());
     }
 
     public function getDescription()

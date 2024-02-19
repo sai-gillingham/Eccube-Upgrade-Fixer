@@ -96,13 +96,12 @@ class Fixer
                     continue;
                 }
 
+                $fixer->applyFix($file, $tokens);
 
-                $newest = $fixer->applyFix($file, $tokens);
-
-                if ($newest !== $new) {
+                if ($tokens->generateCode() !== $new) {
                     $appliedFixers[] = $fixer->getName();
                 }
-                $new = $newest;
+                $new = $tokens->generateCode();
             }
         } catch (\Exception $e) {
 

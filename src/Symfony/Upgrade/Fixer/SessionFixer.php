@@ -34,8 +34,6 @@ class SessionFixer extends AbstractFixer
             $this->fixSetting($tokens);
             // コンストラクタの分岐に元トークンの使用クラスが使用されるため、使用クラスの書き換えは最後にする
             $this->fixUseClass($tokens);
-
-            file_put_contents($file, $tokens->generateCode());
         }
     }
 

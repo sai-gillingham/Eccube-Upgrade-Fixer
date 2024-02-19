@@ -72,10 +72,6 @@ class GetDirFixer extends AbstractFixer
                 )
             );
         }
-
-        if($flag){
-            file_put_contents($file, $tokens->generateCode());
-        }
     }
 
     public function getDescription()

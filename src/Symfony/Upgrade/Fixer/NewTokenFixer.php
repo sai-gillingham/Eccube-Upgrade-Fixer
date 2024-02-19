@@ -94,10 +94,6 @@ class NewTokenFixer extends AbstractFixer
                 }
             }
         }
-
-        if($changeFlag){
-            file_put_contents($file, $tokens->generateCode());
-        }
     }
 
     public function getDescription()
