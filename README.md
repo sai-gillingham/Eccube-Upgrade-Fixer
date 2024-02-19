@@ -1,4 +1,4 @@
-# EC-CUBE Upgrade Fixer [![Build Status](https://travis-ci.org/EC-CUBE/Eccube-Upgrade-Fixer.svg)](https://travis-ci.org/EC-CUBE/Eccube-Upgrade-Fixer)
+# EC-CUBE Upgrade Fixer
 
 EC-CUBE4.2系のプラグインプロジェクトを解析して、EC-CUBE4.3系に互換性のあるコードに変換します。このツールは [Symfony Upgrade Fixer](https://github.com/umpirsky/Symfony-Upgrade-Fixer) をフォークしています。
 
@@ -11,7 +11,7 @@ EC-CUBE4.2系のプラグインプロジェクトを解析して、EC-CUBE4.3系
 ## システム要件
 
 このFixerはPHP8.1以上で動作します。
-7以下には対応していません。
+PHP7.4以下には対応していません。
 
 ## 使い方
 
@@ -22,24 +22,10 @@ $ bin/eccube-upgrade-fixer fix /path/to/dir
 $ bin/eccube-upgrade-fixer fix /path/to/file
 ```
 
-<!-- ``--dry-run``オプションを付けると、ファイルは変更せずに変換が必要なファイルを表示します。 -->
+``--dry-run``オプションを付けると、ファイルは変更せずに変換が必要なファイルを表示します。
 
 ```bash
-$ eccube-upgrade-fixer fix /path/to/code --dry-run
-```
-
-``--no-use-reorder``オプションを指定した場合は、use文の並び替えを行いません。
-
-```bash
-$ eccube-upgrade-fixer fix /path/to/code --no-use-reorder
-```
-
-### Dockerで利用する
-
-プラグインプロジェクトのディレクトリをマウントすれば以下のようにDockerで実行することができます。
-
-```bash
-docker run --rm -v /path/to/plugin:/app eccube/upgrade-fixer fix /app
+$ bin/eccube-upgrade-fixer fix /path/to/code --dry-run
 ```
 
 
