@@ -10,7 +10,7 @@ use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use Symfony\Upgrade\Util\UseTokenUtil;
 
-class MasterToMainFixer extends AbstractFixer
+class EventArgumentFixer extends AbstractFixer
 {
     public function isCandidate(Tokens $tokens): bool
     {
@@ -20,8 +20,8 @@ class MasterToMainFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            'masterRequest系のメソッド名を修正します',
-            [new CodeSample("isMasterRequest(")],
+            'EventListenerのメソッドの引数を修正します',
+            [new CodeSample('GetResponseEvent $event')],
             null,
             null
         );
@@ -29,12 +29,33 @@ class MasterToMainFixer extends AbstractFixer
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
-        while ($this->isGetMasterRequest($tokens)) {
-            $this->fixRename1($tokens);
+        // 一番頭のfunctionを基準点として設定する
+        $target = $tokens->findSequence([
+            [T_FUNCTION]
+        ]);
+        
+        if($target){
+            $useTokenIndexes = array_keys($target);
+            $targetKey = $useTokenIndexes[0];
+        }else{
+            return;
         }
+        
+        foreach($tokens as $key => $token){
+            // 変数設定前なら次のループへ
+            
 
-        while ($this->isIsMasterRequest($tokens)){
-            $this->fixRename2($tokens);
+            // 変更対象の文字列かを判定
+
+            // 変更対象ならクラス名を書き換える
+
+            // クラス名の書き換えがあった場合
+
+            // 型宣言のクラスがUseされているかを確認する
+
+            //使用されていなかった場合
+
+            // useするようにする
         }
     }
 
