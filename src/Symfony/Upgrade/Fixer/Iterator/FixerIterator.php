@@ -12,11 +12,10 @@ class FixerIterator implements \IteratorAggregate
     {
         foreach (Finder::create()->files()->in(__DIR__.'/..')->sortByName()->depth(0) as $file) {
             $class = 'Symfony\\Upgrade\\Fixer\\'.$file->getBasename('.php');
-
+            var_dump($class."が書き換え対象かを判定");
             if ((new \ReflectionClass($class))->isAbstract()) {
                 continue;
             }
-
             $this->fixers[] = new $class();
         }
     }

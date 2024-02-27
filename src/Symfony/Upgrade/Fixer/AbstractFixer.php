@@ -2,9 +2,9 @@
 
 namespace Symfony\Upgrade\Fixer;
 
-use Symfony\CS\AbstractFixer as BaseAbstractFixer;
-use Symfony\CS\Tokenizer\Token;
-use Symfony\CS\Tokenizer\Tokens;
+use PhpCsFixer\AbstractFixer as BaseAbstractFixer ; 
+use PhpCsFixer\Tokenizer\Token;
+use PhpCsFixer\Tokenizer\Tokens;
 
 abstract class AbstractFixer extends BaseAbstractFixer
 {
@@ -98,6 +98,7 @@ abstract class AbstractFixer extends BaseAbstractFixer
         }
         array_pop($fqcnTokens);
 
+        // コード挿入
         $tokens->insertAt(
             $importUseIndexes[0],
             array_merge(

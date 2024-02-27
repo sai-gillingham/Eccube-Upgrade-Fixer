@@ -2,8 +2,8 @@
 
 namespace Symfony\Upgrade\Console\Command;
 
-use Symfony\CS\ErrorsManager;
-use Symfony\CS\Finder\DefaultFinder;
+use PhpCsFixer\Error\ErrorsManager;
+use PhpCsFixer\Finder;
 use Symfony\CS\Fixer\Contrib\OrderedUseFixer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -40,11 +40,14 @@ class FixCommand extends Command
             $errorsManager,
             $stopwatch
         );
+        
         $this->fixer->registerBuiltInFixers();
-
+        
+        /*
         if (! $input->getOption('no-use-reorder')) {
             $this->fixer->addFixer(new OrderedUseFixer());
         }
+        */
 
         $stopwatch->start('fixFiles');
 
@@ -104,8 +107,8 @@ class FixCommand extends Command
             return new \ArrayIterator([new \SplFileInfo($path)]);
         }
 
-        $finder = new DefaultFinder();
-        $finder->setDir($path);
+        $finder = new Finder();
+        $finder->in($path);
 
         return $finder;
     }
