@@ -98,6 +98,6 @@ class NewTokenFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix new ***Token argument.';
     }
 }

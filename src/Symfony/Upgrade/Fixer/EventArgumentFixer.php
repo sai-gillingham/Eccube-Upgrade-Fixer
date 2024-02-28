@@ -28,79 +28,90 @@ class EventArgumentFixer extends AbstractFixer
     }
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
-    {
-        // 一番頭のfunctionを基準点として設定する
-        $target = $tokens->findSequence([
-            [T_FUNCTION]
-        ]);
-        
-        if($target){
-            $useTokenIndexes = array_keys($target);
-            $targetKey = $useTokenIndexes[0];
-        }else{
-            return;
-        }
-        
+    {   
+        $changeRequestEventFlag = false;
+        $changeResponseEventFlag = false;
+
+        $classFlag = true;
+
         foreach($tokens as $key => $token){
             // 変数設定前なら次のループへ
-            
+            if($classFlag){
+                if($token->getContent() == ';'){
+                    $changeTarget = $key;
+                }
+                if($token->getContent() == 'class'){
+                    $classFlag = false;
+                }
+                continue;
+            }
 
             // 変更対象の文字列かを判定
+            $checkString = $token->getContent();
+            if($checkString == 'GetResponseEvent'){
+                // 変更対象ならクラス名を書き換える
+                $tokens[$key] = new Token([T_STRING, 'RequestEvent']);
 
-            // 変更対象ならクラス名を書き換える
+                $changeRequestEventFlag = true;
+            }
 
-            // クラス名の書き換えがあった場合
+            if($checkString == 'FilterResponseEvent'){
+                // 変更対象ならクラス名を書き換える
+                $tokens[$key] = new Token([T_STRING, 'ResponseEvent']);
 
-            // 型宣言のクラスがUseされているかを確認する
-
-            //使用されていなかった場合
-
-            // useするようにする
+                $changeResponseEventFlag = true;
+            }
         }
-    }
 
-    private function fixRename1(Tokens $tokens)
-    {
-        $useTokens = $tokens->findSequence([
-            [T_STRING, 'getMasterRequest'],
-        ]);
-        
-        if ($useTokens) {
-            $useTokenIndexes = array_keys($useTokens);
-            $tokens[$useTokenIndexes[0]] = new Token([T_STRING, 'getMainRequest']);
-        }   
-    }
+        if(!$changeRequestEventFlag && !$changeResponseEventFlag){
+            return;
+        }
 
-    private function fixRename2(Tokens $tokens)
-    {
-        $useTokens = $tokens->findSequence([
-            [T_STRING, 'isMasterRequest'],
-        ]);
-        
-        if ($useTokens) {
-            $useTokenIndexes = array_keys($useTokens);
-            $tokens[$useTokenIndexes[0]] = new Token([T_STRING, 'isMainRequest']);
-        }   
-    }
+        // クラス名の書き換えがあった場合
+        // 型宣言のクラスがUseされているかを確認する
+        //使用されていなかった場合
+        // useするようにする  Symfony\Component\HttpKernel\Event\RequestEvent
+        if($changeRequestEventFlag){
+            $fqcn = ['Symfony','Component', 'HttpKernel', 'Event','RequestEvent'];
+            if (!$this->hasUseStatements($tokens, $fqcn)) {
+                $tokens->insertAt(
+                    $changeTarget + 1,
+                    array_merge(
+                        [
+                            new Token([T_WHITESPACE, "\n"]),
+                            new Token([T_USE, 'use ']),
+                            new Token([T_CLASS, 'Symfony\Component\HttpKernel\Event\RequestEvent']),
+                            new Token([T_STRING, ';']),
+                            
+                            
+                        ]
+                    )
+                );
+            }
+        }
 
-    private function isGetMasterRequest($tokens)
-    {
-        return $tokens->findSequence([
-            [T_STRING, 'getMasterRequest']
-        ]);
+        if($changeResponseEventFlag){
+            $fqcn = ['Symfony','Component', 'HttpKernel', 'Event','ResponseEvent'];
+            if (!$this->hasUseStatements($tokens, $fqcn)) {
 
-    }
-
-    private function isIsMasterRequest($tokens)
-    {
-        return $tokens->findSequence([
-            [T_STRING, 'isMasterRequest']
-        ]);
-
+                $tokens->insertAt(
+                    $changeTarget + 1,
+                    array_merge(
+                        [
+                            new Token([T_WHITESPACE, "\n"]),
+                            new Token([T_USE, 'use ']),
+                            new Token([T_CLASS, 'Symfony\Component\HttpKernel\Event\ResponseEvent']),
+                            new Token([T_STRING, ';']),
+                            
+                        ]
+                    )
+                );
+            }
+        }
     }
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix Eventristener argument class.';
     }
 }

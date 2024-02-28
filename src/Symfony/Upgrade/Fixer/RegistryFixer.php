@@ -90,6 +90,6 @@ class RegistryFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix using RegistryInterfaceClass namespace.';
     }
 }

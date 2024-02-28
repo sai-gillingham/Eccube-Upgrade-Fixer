@@ -80,6 +80,6 @@ class MasterToMainFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix method name "masterRequest" to "mainRequest".';
     }
 }

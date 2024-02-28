@@ -10,7 +10,7 @@ use PhpCsFixer\Tokenizer\Token;
 use PhpCsFixer\Tokenizer\Tokens;
 use Symfony\Upgrade\Util\UseTokenUtil;
 
-class TwigEnvironmentFixer extends AbstractFixer
+class TestContainerFixer extends AbstractFixer
 {
     public function isCandidate(Tokens $tokens): bool
     {
@@ -20,8 +20,8 @@ class TwigEnvironmentFixer extends AbstractFixer
     public function getDefinition(): FixerDefinitionInterface
     {
         return new FixerDefinition(
-            '\Twig_environmentを\Twig\Environmentに修正します',
-            [new CodeSample("\Twig_environment")],
+            'self::$containerをself::getContainer()に修正します',
+            [new CodeSample('self::$container')],
             null,
             null
         );
@@ -29,20 +29,22 @@ class TwigEnvironmentFixer extends AbstractFixer
 
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
+        if(!str_contains($file->getFilename(), "Test")){
+            // テストに関するファイル以外は変更対象外
+            return;
+        }
         // ファイル内の全トークンを判定する
-        foreach($tokens as $key => $token){
-            if(str_contains($token->getContent(),'Twig_Environment')){
-                // クラス名を正式なものに書き換える
-                $newString = str_replace('Twig_Environment', 'Twig\Environment',$token->getContent());
-
-                $newToken = new Token([T_STRING, $newString]);
-                $tokens[$key] = $newToken;
-            }
+        while($target = $tokens->findSequence([
+            [T_DOUBLE_COLON, '::'],
+            [T_VARIABLE,'$container']
+        ])){
+            $useTokenIndexes = array_keys($target);
+            $tokens[$useTokenIndexes[1]] = new Token([T_STRING, 'getContainer()']);
         }
     }
 
     public function getDescription()
     {
-        return 'Fix TwigEnvironment class name.';
+        return 'Fix getting container.';
     }
 }
