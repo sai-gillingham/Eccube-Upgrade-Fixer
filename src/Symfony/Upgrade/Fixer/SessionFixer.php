@@ -179,6 +179,6 @@ class SessionFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix constructing $this->session.';
     }
 }

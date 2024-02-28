@@ -84,6 +84,6 @@ class ContainerClassFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix using ContainerClass namespace.';
     }
 }

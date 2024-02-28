@@ -45,6 +45,6 @@ class TestContainerFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix getting container.';
     }
 }

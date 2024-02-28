@@ -80,6 +80,6 @@ class GetRouteClassFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix using Route class namespace.';
     }
 }

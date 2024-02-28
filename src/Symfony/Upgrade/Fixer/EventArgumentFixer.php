@@ -112,6 +112,6 @@ class EventArgumentFixer extends AbstractFixer
 
     public function getDescription()
     {
-        return 'Fix ServiceProvider.';
+        return 'Fix Eventristener argument class.';
     }
 }
