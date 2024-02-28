@@ -30,7 +30,6 @@ class GetRouteClassFixer extends AbstractFixer
     public function applyFix(\SplFileInfo $file, Tokens $tokens): void
     {
         if ($this->isHasClass($tokens)) {
-            var_dump("見つけたで");
             $this->fixUseClass($tokens);
         }
     }

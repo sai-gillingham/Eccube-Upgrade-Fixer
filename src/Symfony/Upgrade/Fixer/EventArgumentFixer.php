@@ -110,39 +110,6 @@ class EventArgumentFixer extends AbstractFixer
         }
     }
 
-    private function fixRename1(Tokens $tokens, $key)
-    {   
-        $tokens[$key] = new Token([T_STRING, 'getMainRequest']);
-    }
-
-    private function fixRename2(Tokens $tokens, $key)
-    {
-        $useTokens = $tokens->findSequence([
-            [T_STRING, 'isMasterRequest'],
-        ]);
-        
-        if ($useTokens) {
-            $useTokenIndexes = array_keys($useTokens);
-            $tokens[$useTokenIndexes[0]] = new Token([T_STRING, 'isMainRequest']);
-        }   
-    }
-
-    private function isGetMasterRequest($tokens)
-    {
-        return $tokens->findSequence([
-            [T_STRING, 'getMasterRequest']
-        ]);
-
-    }
-
-    private function isIsMasterRequest($tokens)
-    {
-        return $tokens->findSequence([
-            [T_STRING, 'isMasterRequest']
-        ]);
-
-    }
-
     public function getDescription()
     {
         return 'Fix ServiceProvider.';
